@@ -6,6 +6,8 @@
   "private": true,
   "scripts": {
     "start": "node main.js"
+  },
+  "dependencies": {
+    "node-binance-api": "0.8.3"
   }
-
 }
