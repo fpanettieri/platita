@@ -1,5 +1,12 @@
 'use strict';
 
-while (true){
-  console.log('Hello World!');
-}
+const nba = require('node-binance-api');
+
+const binance = nba().options({
+  APIKEY: process.env.BINANCE_KEY,
+  APISECRET: process.env.BINANCE_SECRET,
+  useServerTime: true,
+  test: true
+});
+
+// Hardcoded alghoritm
