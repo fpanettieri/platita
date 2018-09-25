@@ -10,3 +10,6 @@ const binance = nba().options({
 });
 
 // Hardcoded alghoritm
+
+
+console.log('done');
