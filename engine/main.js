@@ -12,4 +12,7 @@ const binance = nba().options({
 // Hardcoded alghoritm
 
 
+// Get the needed candles to calculate
+
+
 console.log('done');
