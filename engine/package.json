@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Trading Strategy Engine",
   "author": "Fabio Panettieri",
-  "private": true
+  "private": true,
+  "scripts": {
+    "start": "node main.js"
+  }
 
 }
