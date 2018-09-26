@@ -1,0 +1,33 @@
+=====================
+  Todo
+=====================
+. Launch thread that listens to the market
+
+. Store new candles in a 'mem-db'
+. When a new candle arrives, try to analyze it (and other data without ta)
+. If there is not enough information, return
+
+. Launch a process that fetches previous information
+. Parallel fetch
+. Generate a unique id (maybe divide time frame)
+. if we are asking TOO MUCH info to binance, wait a little
+
+. Calculate EMA50
+. Calculate VixFix
+. Enter positions
+. Track positions
+. Set SL Immediately
+
+
+=====================
+  Ideas
+=====================
+. Process that analyzes the market and finds 'good coins'
+. Real time visualization of EVERYTHING
+. Real time client for candles
+  . Publish the new data in a socket or something ??
+
+
+=====================
+  Done
+=====================
