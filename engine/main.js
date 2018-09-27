@@ -18,7 +18,7 @@ const binance = nba().options({
 let db = {};
 
 const cfg = {
-  symbols: ["POEBTC", "AIONBTC"],
+  symbols: ["POEBTC"],
   interval: "15m"
 }
 
@@ -52,9 +52,7 @@ for (let i = 0; i < cfg.symbols.length; i++) {
   getSymbolMeta(cfg.symbols[i], cfg.interval);
 }
 
-// let api = binance.init();
-
-
-
-// Get all the history of the pair
-// TA it
+// TODO: once all pairs have been initialized
+//   a. Launch the listener 'thread'
+//   b. Start fetching the history of each pair (queue based, single fetch thread?)
+// once we have ENOUGH data, start Analyzing it
