@@ -1,6 +1,20 @@
 =====================
   Todo
 =====================
+. once all pairs have been initialized
+  a. Launch the listener 'thread'
+  b. Start fetching the history of each pair (queue based, single fetch thread?)
+. once we have ENOUGH data, start Analyzing it
+  a. EMA50
+  b. VixFix
+  c. Direction
+. after a candle has been analyzed, check if it's a buy / sell or ignore
+. notify the trader
+. Open / Close a position
+
+=====================
+  Backlog
+=====================
 . Launch thread that listens to the market
 
 . Store new candles in a 'mem-db'
@@ -17,7 +31,6 @@
 . Enter positions
 . Track positions
 . Set SL Immediately
-
 
 =====================
   Ideas
