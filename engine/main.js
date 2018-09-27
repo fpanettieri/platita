@@ -12,28 +12,33 @@ const binance = nba().options({
   test: process.env.BINANCE_SANDBOX
 });
 
-// Hardcoded alghoritm
+// Hardcoded strategy
 
 // TODO: use mongo
 let db = {};
 
 const cfg = {
-  symbol: "POEBTC",
+  symbols: ["POEBTC", "AIONBTC"],
   interval: "15m"
 }
 
 function getSymbolMeta (symbol, interval) {
-  console.log('[]');
+  console.log(`[getSymbolMeta] ${symbol}, ${interval}`);
+
+  db[symbol] = {};
 
   binance.candlesticks(symbol, interval, (error, ticks, symbol) => {
     if (error) { throw error; }
-    db[cfg.symbol].meta = {
+
+    db[symbol].meta = {
       first: ticks[0][0],
       step: ticks[1][0] - ticks[0][0]
     };
 
-    console.log('')
+    let lifetime = Date.now() - ticks[0][0];
+    let candles = Math.trunc(lifetime / db[symbol].meta.step);
 
+    console.log(`[${symbol}] Life: ${lifetime}\tCandles: ${candles}`);
   }, {
     limit: 2,
     startTime: 0
@@ -43,7 +48,11 @@ function getSymbolMeta (symbol, interval) {
 // -- Initialization
 cli.hero();
 
-// binance.init();
+for (let i = 0; i < cfg.symbols.length; i++) {
+  getSymbolMeta(cfg.symbols[i], cfg.interval);
+}
+
+// let api = binance.init();
 
 
 

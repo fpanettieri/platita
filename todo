@@ -1,11 +1,6 @@
 =====================
   Todo
 =====================
-. 
-
-
-
-
 . Launch thread that listens to the market
 
 . Store new candles in a 'mem-db'
