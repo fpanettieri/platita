@@ -2,7 +2,7 @@
 
 const nba = require('node-binance-api');
 
-function init (key, secret, sandbox, verbose)
+function init (key, secret, sandbox, verbose = false)
 {
   let binance = nba().options({
     APIKEY: key,
@@ -12,7 +12,6 @@ function init (key, secret, sandbox, verbose)
     verbose: verbose
   });
 
-  console.log('sync?', binance);
   return binance;
 }
 

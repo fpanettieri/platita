@@ -1,17 +1,24 @@
 'use strict';
 
+const sync = require('./lib/sync');
 
-for (let i = 0; i < cfg.symbols.length; i++) {
-  initSymbol(cfg.symbols[i], cfg.interval);
+function init (symbols, interval, binance, mongo)
+{
+  const mutex = sync.mutex();
+
+  for (let i = 0; i < cfg.symbols.length; i++) {
+    initSymbol(cfg.symbols[i], cfg.interval);
+  }
+
+  // FIXME: sleep, so we don't kill the cpu
+  sync.wait(mutex);
 }
 
-async function init (symbol, interval) {
+function initSymbol (symbol, interval, binance, mongo)
+{
   console.log(`[${symbol}:${interval}] initSymbol`);
 
-
   // TODO: Check if the data exists in mongo
-
-  db[symbol] = {};
 
   binance.candlesticks(symbol, interval, parseSymbolMeta, {
     limit: 2,

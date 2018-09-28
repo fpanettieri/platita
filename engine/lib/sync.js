@@ -20,9 +20,7 @@ function mutex ()
 
 function wait (mutex)
 {
-  while (mutex.locked) {
-    // SOMETHING
-  }
+  while (mutex.locked) { }
 }
 
 module.exports = {
