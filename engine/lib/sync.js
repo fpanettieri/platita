@@ -20,7 +20,8 @@ function mutex ()
 
 function wait (mutex)
 {
-  while (mutex.locked) { }
+  // JAVASCRIPT SUCKS
+  // while (mutex.locked) { }
 }
 
 module.exports = {

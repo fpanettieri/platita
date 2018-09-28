@@ -7,7 +7,7 @@ const cli = require('./lib/cli');
 // const util = require('./lib/util');
 
 const binance_api = require('./binance/api');
-const archivist = require('./binance/archivist');
+// const archivist = require('./binance/archivist');
 
 // config
 const env = process.env;
@@ -27,6 +27,14 @@ if (argv.length == 3 && argv[2] === '-h') {
 
 const binance = binance_api.init(env.BINANCE_KEY, env.BINANCE_SECRET, env.BINANCE_SANDBOX);
 
-archivist.init(cfg.symbols, cfg.interval, binance, mongo);
+binance.websockets.chart(cfg.symbols, cfg.interval, (symbol, interval, chart) => {
+  let tick = binance.last(chart);
+  const last = chart[tick].close;
+  console.log(chart);
+  // Optionally convert 'chart' object to array:
+  // let ohlc = binance.ohlc(chart);
+  // console.log(symbol, ohlc);
+  console.log(symbol+" last price: "+last)
+});
 
 console.log('[DONE]');
