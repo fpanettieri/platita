@@ -1,53 +1,35 @@
 'use strict';
 
-const nba = require('node-binance-api');
+// const mongodb = require('mongodb');
 
-const cli = require('./cli');
-const util = require('./util');
+const cli = require('./lib/cli');
+const sync = require('./lib/sync');
+// const util = require('./lib/util');
 
-const binance = nba().options({
-  APIKEY: process.env.BINANCE_KEY,
-  APISECRET: process.env.BINANCE_SECRET,
-  useServerTime: true,
-  test: process.env.BINANCE_SANDBOX
-});
+const binance_api = require('./binance/api');
+// const archivist = require('./binance/archivist');
 
-// Hardcoded strategy
+const env = process.env;
+const argv = process.argv;
+const cfg = { symbols: ["BTCUSDT"], interval: "15m" };
 
-// TODO: use mongo
-let db = {};
+debugger;
 
-const cfg = {
-  symbols: ["POEBTC"],
-  interval: "15m"
-}
+// TODO: parse from cfg file, and merge with command line param. (cli > cfg > default)
 
-function getSymbolMeta (symbol, interval) {
-  console.log(`[getSymbolMeta] ${symbol}, ${interval}`);
-
-  db[symbol] = {};
-
-  binance.candlesticks(symbol, interval, (error, ticks, symbol) => {
-    if (error) { throw error; }
-
-    db[symbol].meta = {
-      first: ticks[0][0],
-      step: ticks[1][0] - ticks[0][0]
-    };
-
-    let lifetime = Date.now() - ticks[0][0];
-    let candles = Math.trunc(lifetime / db[symbol].meta.step);
-
-    console.log(`[${symbol}] Life: ${lifetime}\tCandles: ${candles}`);
-  }, {
-    limit: 2,
-    startTime: 0
-  });
-}
-
-// -- Initialization
+// -- Go!
+cli.title();
 cli.hero();
 
-for (let i = 0; i < cfg.symbols.length; i++) {
-  getSymbolMeta(cfg.symbols[i], cfg.interval);
+if (process.argv.length == 3 && process.argv[2] === '-h') {
+  return cli.help();
 }
+
+binance = binance_api.init(env.BINANCE_KEY, env.BINANCE_SECRET, env.BINANCE_SANDBOX, env.BINANCE_VERBOSE);
+
+// Ensure every symbol has been initialized
+const mutex = sync.mutex();
+archivist.init(cfg.symbols, cfg.interval, mutex, binance, mongo);
+sync.wait(mutex);
+
+console.log('[DONE]');
