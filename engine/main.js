@@ -1,18 +1,17 @@
 'use strict';
 
-// const mongodb = require('mongodb');
+const events = require('events');
 
 const cli = require('./lib/cli');
 
-// const util = require('./lib/util');
-
 const binance_api = require('./binance/api');
-// const archivist = require('./binance/archivist');
+const archivist = require('./binance/archivist');
 
 // config
 const env = process.env;
 const argv = process.argv;
 const cfg = { symbols: ["BTCUSDT"], interval: "15m" };
+const db = {};
 
 // -- Go!
 process.title = 'bearish_bottoms';
@@ -25,16 +24,16 @@ if (argv.length == 3 && argv[2] === '-h') {
   cfg.interval = argv[3];
 }
 
+const emitter = new events();
 const binance = binance_api.init(env.BINANCE_KEY, env.BINANCE_SECRET, env.BINANCE_SANDBOX);
 
-binance.websockets.chart(cfg.symbols, cfg.interval, (symbol, interval, chart) => {
-  let tick = binance.last(chart);
-  const last = chart[tick].close;
-  console.log(chart);
-  // Optionally convert 'chart' object to array:
-  // let ohlc = binance.ohlc(chart);
-  // console.log(symbol, ohlc);
-  console.log(symbol+" last price: "+last)
-});
+archivist.bind(emitter);
+// watcher.bind()
+
+for (let i = 0; i < symbols.length; i++) {
+  let symbol = symbols[i];
+  db[symbol] = {};
+  archivist.init(symbol, cfg.interval, binance, db);
+}
 
 console.log('[DONE]');

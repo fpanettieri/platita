@@ -1,33 +1,42 @@
 'use strict';
 
-function init (symbol, interval, db) {
+function init (symbols, interval, binance, db)
+{
+  for (let i = 0; i < symbols.length; i++) {
+    initSymbol(symbols[i], interval, mutex, binance, mongo);
+  }
+
+  // TODO: once every symbol has been initialized, trigger the watch event
+}
+
+function initSymbol (symbol, interval, binance, mongo)
+{
   console.log(`[${symbol}:${interval}] initSymbol`);
 
-  db[symbol] = {};
+  // TODO: Check if the data exists in mongo
 
-  binance.candlesticks(symbol, interval, parseSymbolMeta, {
+  binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
+    if (error) {
+      console.error(`[${symbol}:${interval}] Initialization failed!`);
+      throw error;
+    }
+
+    db[symbol].meta = {
+      first: ticks[0][0],
+      step: ticks[1][0] - ticks[0][0]
+    };
+
+    let lifetime = Date.now() - ticks[0][0];
+    let candles = Math.trunc(lifetime / db[symbol].meta.step);
+
+    console.log(`[${symbol}:${interval}] Life: ${lifetime}\tCandles: ${candles}`);
+  }, {
     limit: 2,
     startTime: 0
   });
 }
 
-function parseSymbolMeta (error, ticks, symbol) {
-  if (error) {
-    console.error(`[${symbol}:${interval}] Initialization failed!`);
-    throw error;
-  }
-
-  db[symbol].meta = {
-    first: ticks[0][0],
-    step: ticks[1][0] - ticks[0][0]
-  };
-
-  let lifetime = Date.now() - ticks[0][0];
-  let candles = Math.trunc(lifetime / db[symbol].meta.step);
-
-  console.log(`[${symbol}:${interval}] Life: ${lifetime}\tCandles: ${candles}`);
-}
-
 module.exports = {
-  clone: clone
+  init: init,
+  initSymbol
 }
