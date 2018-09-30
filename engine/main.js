@@ -30,8 +30,8 @@ const binance = binance_api.init(env.BINANCE_KEY, env.BINANCE_SECRET, env.BINANC
 archivist.bind(emitter);
 // watcher.bind()
 
-for (let i = 0; i < symbols.length; i++) {
-  let symbol = symbols[i];
+for (let i = 0; i < cfg.symbols.length; i++) {
+  let symbol = cfg.symbols[i];
   db[symbol] = {};
   archivist.getMetadata(symbol, cfg.interval, binance, db);
 }
