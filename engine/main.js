@@ -25,6 +25,8 @@ if (argv.length == 3 && argv[2] === '-h') {
   cfg.interval = argv[3];
 }
 
+// launch the other processes
+
 const backbone = new Backbone();
 const binance = binance_api.init(env.BINANCE_KEY, env.BINANCE_SECRET, env.BINANCE_SANDBOX);
 

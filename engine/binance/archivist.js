@@ -1,5 +1,7 @@
 'use strict';
 
+const net = require('net');
+
 function bind (backbone)
 {
   backbone.emit('ArchivistBind');
@@ -16,9 +18,7 @@ function getMetadata (symbol, interval)
 {
   binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
     if (error) {
-      backbone.emit('error', symbol, interval);
-      console.error(`[${symbol}:${interval}] getMetadata failed!`);
-      throw error;
+      backbone.emit('error', 'Symbol initialization failed: ', symbol, interval);
     }
 
     db[symbol].meta = {
@@ -50,7 +50,21 @@ function downloadHistory (symbol, interval)
 
 }
 
-module.exports = {
-  bind: bind,
-  getMetadata: getMetadata
-}
+
+const server = net.createServer((c) => {
+  // 'connection' listener
+  console.log('client connected');
+  c.on('end', () => {
+    console.log('client disconnected');
+  });
+  c.write('hello\r\n');
+  c.pipe(c);
+});
+
+server.on('error', (err) => { throw err; });
+
+server.listen(8124, () => {
+  console.log('server bound');
+});
+
+// this will become a full time process that listens for specific events and reacts to it
