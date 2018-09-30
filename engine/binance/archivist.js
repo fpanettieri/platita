@@ -1,12 +1,13 @@
 'use strict';
 
-function bind (emitter)
+function bind (backbone)
 {
-  console.log(`[Archivist.bind]`);
   // Bind event handlers
+
+  backbone.emit('ArchivistBound');
 }
 
-function getMetadata (symbol, interval, binance, db, emitter)
+function getMetadata (symbol, interval, binance, db, backbone)
 {
   console.log(`[Archivist.getMetadata] ${symbol}, ${interval}`);
 
@@ -26,14 +27,14 @@ function getMetadata (symbol, interval, binance, db, emitter)
 
     console.log(`[${symbol}:${interval}] Life: ${lifetime}\tCandles: ${candles}`);
 
-    throw 'CONTINUE HERE'
+    // throw 'CONTINUE HERE'
     // TODO: Read about proper event cycles, implement it here.
     // Notify other modules that the symbol has been initialized properly
     // Archivist: download the old history of the symbol
     // Watcher: watch the market in real time, store the candles in the database
     // Analyst: After each candle arrives
 
-    emitter.emit('???');
+    backbone.emit('SymbolInitialized', symbol);
   }, {
     limit: 2,
     startTime: 0

@@ -3,6 +3,7 @@
 const events = require('events');
 
 const cli = require('./lib/cli');
+const Backbone = require('./lib/backbone');
 
 const binance_api = require('./binance/api');
 const archivist = require('./binance/archivist');
@@ -24,16 +25,14 @@ if (argv.length == 3 && argv[2] === '-h') {
   cfg.interval = argv[3];
 }
 
-const emitter = new events();
+const backbone = new Backbone();
 const binance = binance_api.init(env.BINANCE_KEY, env.BINANCE_SECRET, env.BINANCE_SANDBOX);
 
-archivist.bind(emitter);
+archivist.bind(backbone);
 // watcher.bind()
 
 for (let i = 0; i < cfg.symbols.length; i++) {
   let symbol = cfg.symbols[i];
   db[symbol] = {};
-  archivist.getMetadata(symbol, cfg.interval, binance, db);
+  archivist.getMetadata(symbol, cfg.interval, binance, db, backbone);
 }
-
-console.log('[DONE]');
