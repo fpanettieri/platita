@@ -33,7 +33,7 @@ archivist.bind(emitter);
 for (let i = 0; i < symbols.length; i++) {
   let symbol = symbols[i];
   db[symbol] = {};
-  archivist.init(symbol, cfg.interval, binance, db);
+  archivist.getMetadata(symbol, cfg.interval, binance, db);
 }
 
 console.log('[DONE]');

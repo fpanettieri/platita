@@ -1,23 +1,18 @@
 'use strict';
 
-function init (symbols, interval, binance, db)
+function bind (emitter)
 {
-  for (let i = 0; i < symbols.length; i++) {
-    initSymbol(symbols[i], interval, mutex, binance, mongo);
-  }
-
-  // TODO: once every symbol has been initialized, trigger the watch event
+  console.log(`[Archivist.bind]`);
+  // Bind event handlers
 }
 
-function initSymbol (symbol, interval, binance, mongo)
+function getMetadata (symbol, interval, binance, db)
 {
-  console.log(`[${symbol}:${interval}] initSymbol`);
-
-  // TODO: Check if the data exists in mongo
+  console.log(`[Archivist.getMetadata] ${symbol}:${interval}`);
 
   binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
     if (error) {
-      console.error(`[${symbol}:${interval}] Initialization failed!`);
+      console.error(`[${symbol}:${interval}] getMetadata failed!`);
       throw error;
     }
 
@@ -37,6 +32,6 @@ function initSymbol (symbol, interval, binance, mongo)
 }
 
 module.exports = {
-  init: init,
-  initSymbol
+  bind: bind,
+  getMetadata: getMetadata
 }
