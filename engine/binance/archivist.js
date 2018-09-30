@@ -2,17 +2,21 @@
 
 function bind (backbone)
 {
-  // Bind event handlers
+  backbone.emit('ArchivistBind');
+
+  backbone.on('SymbolInitialized', downloadHistory);
+  backbone.on('SymbolInitialized', downloadHistory);
 
   backbone.emit('ArchivistBound');
 }
 
-function getMetadata (symbol, interval, binance, db, backbone)
-{
-  console.log(`[Archivist.getMetadata] ${symbol}, ${interval}`);
+// binance, db, backbone, how do I pass these params
 
+function getMetadata (symbol, interval)
+{
   binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
     if (error) {
+      backbone.emit('error', symbol, interval);
       console.error(`[${symbol}:${interval}] getMetadata failed!`);
       throw error;
     }
@@ -34,11 +38,16 @@ function getMetadata (symbol, interval, binance, db, backbone)
     // Watcher: watch the market in real time, store the candles in the database
     // Analyst: After each candle arrives
 
-    backbone.emit('SymbolInitialized', symbol);
+    backbone.emit('SymbolInitialized', symbol, interval);
   }, {
     limit: 2,
     startTime: 0
   });
+}
+
+function downloadHistory (symbol, interval)
+{
+
 }
 
 module.exports = {

@@ -34,5 +34,7 @@ archivist.bind(backbone);
 for (let i = 0; i < cfg.symbols.length; i++) {
   let symbol = cfg.symbols[i];
   db[symbol] = {};
+
+  backbone.emit('InitSymbol', symbol, cfg.interval);
   archivist.getMetadata(symbol, cfg.interval, binance, db, backbone);
 }
