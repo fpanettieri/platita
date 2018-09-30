@@ -63,6 +63,7 @@ const server = net.createServer((c) => {
 
 server.on('error', (err) => { throw err; });
 
+// TODO: listen to this port as a parameter
 server.listen(8124, () => {
   console.log('server bound');
 });
