@@ -1,5 +1,8 @@
 'use strict';
 
+throw 'THIS IS THE PRE MICROSERVICE IMPLEMENTATION, CONTINUE WORKING ON BINANCE/ARCHIVIST DIRECTLY';
+
+
 const events = require('events');
 
 const cli = require('./lib/cli');
