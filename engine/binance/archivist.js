@@ -16,13 +16,28 @@ ___________________________________
 function cliHelp ()
 {
   if (process.argv[2] !== '-h') { return; }
-  console.log('usage: node archivist <port> <host>\n');
+  console.log('\nusage: node archivist <port> <host>\n');
   process.exit();
 }
 
-function handleConnections (conn)
+function handleConnections (client)
 {
-  console.log('client connected');
+  console.log('~> client connected');
+  client.setEncoding('utf-8');
+
+  // When receive client data.
+  client.on('data', function (data) {
+
+    // Print received client data and length.
+    console.log('Receive client send data : ' + data + ', data size : ' + client.bytesRead);
+
+    // Server send data back to client use client net.Socket object.
+    client.end('Server received data : ' + data + ', send back to client data size : ' + client.bytesWritten);
+  });
+
+  client.on('end', function () {
+    console.log('~> client disconnected');
+  });
 }
 
 function handleErrors (err)
@@ -82,8 +97,8 @@ function downloadHistory (symbol, interval)
 }
 
 // -- Initialization
-cliHero();
 cliHelp();
+cliHero();
 
 const server = net.createServer(handleConnections);
 server.on('error', handleErrors);
