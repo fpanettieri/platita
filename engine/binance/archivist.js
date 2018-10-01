@@ -2,6 +2,37 @@
 
 const net = require('net');
 
+function cliHero ()
+{
+  console.log(`
+              _    _     _    _
+  __ _ _ _ __| |_ (_)_ _(_)__| |_
+ / _\` | '_/ _| ' \\| \\ V / (_-<  _|
+ \\__,_|_| \\__|_||_|_|\\_/|_/__/\\__|
+___________________________________
+  `);
+}
+
+function cliHelp ()
+{
+  if (process.argv[2] !== '-h') { return; }
+  console.log('usage: node archivist <port> <host>\n');
+  process.exit();
+}
+
+function handleConnections (conn)
+{
+  console.log('client connected');
+}
+
+function handleErrors (err)
+{
+  if (err.code === 'EADDRINUSE') {
+    console.log('Another server is already listening on the requested port!');
+  }
+  throw err;
+}
+
 function bind (backbone)
 {
   backbone.emit('ArchivistBind');
@@ -50,22 +81,17 @@ function downloadHistory (symbol, interval)
 
 }
 
+// -- Initialization
+cliHero();
+cliHelp();
 
-const server = net.createServer((c) => {
-  // 'connection' listener
-  console.log('client connected');
-  c.on('end', () => {
-    console.log('client disconnected');
-  });
-  c.write('hello\r\n');
-  c.pipe(c);
+const server = net.createServer(handleConnections);
+server.on('error', handleErrors);
+
+let port = process.argv[2] || 0;
+let host = process.argv[3] || '0.0.0.0';
+
+server.listen(port, host, () => {
+  let addr = server.address();
+  console.log(`~> listening on ${addr.address}:${addr.port}`);
 });
-
-server.on('error', (err) => { throw err; });
-
-// TODO: listen to this port as a parameter
-server.listen(8124, () => {
-  console.log('server bound');
-});
-
-// this will become a full time process that listens for specific events and reacts to it
