@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('crypto');
 const net = require('net');
 
 function cliHero ()
@@ -20,19 +21,36 @@ function cliHelp ()
   process.exit();
 }
 
+function pack (data)
+{
+  return '<' + data + '>';
+}
+
+function unpack (data)
+{
+  if (data[0] !== '<' || data[data.length - 1] !== '>'){
+    throw 'malformed msg: ' + data;
+  }
+  return data.substring(1, data.length - 1).split(' ');
+}
+
 function handleConnections (client)
 {
   console.log('~> client connected');
   client.setEncoding('utf-8');
 
-  // When receive client data.
   client.on('data', function (data) {
+    const msg = unpack(data);
 
-    // Print received client data and length.
-    console.log('Receive client send data : ' + data + ', data size : ' + client.bytesRead);
+    switch (msg[0]) {
+      case "DownloadFirstCandle": {
+        getFirstCandle(msg[1], msg[2]);
+      } break;
 
-    // Server send data back to client use client net.Socket object.
-    client.end('Server received data : ' + data + ', send back to client data size : ' + client.bytesWritten);
+      case "DownloadHistory": {
+        downloadHistory(msg[1], msg[2]);
+      } break;
+    }
   });
 
   client.on('end', function () {
@@ -47,18 +65,6 @@ function handleErrors (err)
   }
   throw err;
 }
-
-function bind (backbone)
-{
-  backbone.emit('ArchivistBind');
-
-  backbone.on('SymbolInitialized', downloadHistory);
-  backbone.on('SymbolInitialized', downloadHistory);
-
-  backbone.emit('ArchivistBound');
-}
-
-// binance, db, backbone, how do I pass these params
 
 function getMetadata (symbol, interval)
 {

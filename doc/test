@@ -1,1 +1,4 @@
 node archivist.js -p POEBTC
+
+
+DownloadHistory BTCUSDT 15m
