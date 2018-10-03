@@ -2,6 +2,9 @@
 
 const crypto = require('crypto');
 const net = require('net');
+const mongodb = require('mongodb');
+
+const MongoClient = mongodb.MongoClient;
 
 function cliHero ()
 {
@@ -44,7 +47,7 @@ function handleConnections (client)
 
     switch (msg[0]) {
       case "DownloadFirstCandle": {
-        getFirstCandle(msg[1], msg[2]);
+        downloadFirstCandle(msg[1], msg[2]);
       } break;
 
       case "DownloadHistory": {
@@ -66,7 +69,7 @@ function handleErrors (err)
   throw err;
 }
 
-function getMetadata (symbol, interval)
+function downloadFirstCandle (symbol, interval)
 {
   binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
     if (error) {
@@ -105,6 +108,8 @@ function downloadHistory (symbol, interval)
 // -- Initialization
 cliHelp();
 cliHero();
+
+// MongoClient.connect(`${config.bd}://${config.server}:${config.port}`,{ useNewUrlParser: true }).then(onConnect).catch(utils.error);
 
 const server = net.createServer(handleConnections);
 server.on('error', handleErrors);
