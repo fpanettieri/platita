@@ -4,8 +4,6 @@ const crypto = require('crypto');
 const net = require('net');
 const mongodb = require('mongodb');
 
-const MongoClient = mongodb.MongoClient;
-
 function cliHero ()
 {
   console.log(`
@@ -109,7 +107,9 @@ function downloadHistory (symbol, interval)
 cliHelp();
 cliHero();
 
-// MongoClient.connect(`${config.bd}://${config.server}:${config.port}`,{ useNewUrlParser: true }).then(onConnect).catch(utils.error);
+// TODO: continue here!es
+const MongoClient = mongodb.MongoClient;
+MongoClient.connect(`${config.bd}://${config.server}:${config.port}`,{ useNewUrlParser: true }).then(onConnect).catch(utils.error);
 
 const server = net.createServer(handleConnections);
 server.on('error', handleErrors);
