@@ -1,8 +1,8 @@
 'use strict';
 
 const net = require('net');
-const Logger = require('./logger');
 
+const Logger = new require('./logger').Logger;
 const logger = new Logger('[lib/socket]');
 
 function listen (cb)

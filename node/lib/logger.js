@@ -9,4 +9,4 @@ class Logger
   error () { console.error(prefix, ...arguments); }
 }
 
-module.exports = Backbone;
+module.exports.Logger;
