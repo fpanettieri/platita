@@ -5,7 +5,7 @@ const net = require('net');
 const Logger = new require('./logger');
 const logger = new Logger('[lib/socket]');
 
-function listen (cb)
+function listen (port, host, cb)
 {
   logger.log('opening socket');
 
@@ -13,10 +13,7 @@ function listen (cb)
   server.on('error', handleErrors);
   logger.log('tcp server ready');
 
-  let port = process.argv[2] || 0;
-  let host = process.argv[3] || '0.0.0.0';
   logger.log('binding server to', host, port);
-
   server.listen(port, host, () => {
     let addr = server.address();
     logger.log('listening on', addr.address, addr.port);
@@ -54,6 +51,7 @@ function unpack (data)
 {
   if (data[0] !== '<' || data[data.length - 1] !== '>'){
     // FIXME: check if a throw is correct, or a better metod is preferred
+    console.log(data);
     throw 'malformed msg: ' + data;
   }
   return data.substring(1, data.length - 1).split(' ');

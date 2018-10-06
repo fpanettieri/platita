@@ -38,6 +38,10 @@ function dispatchMsg (msg)
     case "DownloadHistory": {
       downloadHistory(msg[1], msg[2]);
     } break;
+
+    case "Profile": {
+      profile()
+    } break;
   }
 }
 
@@ -79,11 +83,23 @@ function downloadHistory (symbol, interval)
 
 }
 
+function profile ()
+{
+  logger.info('Platform:', process.platform);
+  logger.info('PID:', process.pid);
+  logger.info('Cpu:', process.cpuUsage());
+  logger.info('Mem:', process.memoryUsage());
+}
+
 // -- Initialization
 cliHelp();
 cliHero();
 
+
 mongo.connect((_db) => {
   db = _db;
-  socket.listen(dispatchMsg);
+
+  let port = process.argv[2] || 0;
+  let host = process.argv[3] || '0.0.0.0';
+  socket.listen(port, host, dispatchMsg);
 });
