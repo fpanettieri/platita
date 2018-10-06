@@ -1,21 +1,18 @@
 'use strict';
 
-const mongodb = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 
 const cfg = require('../cfg/mongo.json');
 
-const Logger = new require('./logger').Logger;
+const Logger = require('./logger');
 const logger = new Logger('[lib/mongo]');
 
 function connect (cb)
 {
-  let url = `${cfg.prefix}${cfg.credentials}${cfg.host}:${cfg.port}${cfg.database}${cfg.options}`;
+  let url = `${cfg.prefix}${cfg.credentials}${cfg.host}:${cfg.port}/${cfg.database}${cfg.options}`;
   logger.log('connecting to', url);
 
-  const client = new MongoClient(url);
-  logger.log('client created');
-
-  client.connect((err) => {
+  MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
     if (err) { return logger.error('connection failed', err); }
     logger.log('connected successfully');
     cb(client.db(cfg.database));

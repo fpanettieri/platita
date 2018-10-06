@@ -2,7 +2,7 @@
 
 const net = require('net');
 
-const Logger = new require('./logger').Logger;
+const Logger = new require('./logger');
 const logger = new Logger('[lib/socket]');
 
 function listen (cb)
@@ -60,5 +60,5 @@ function unpack (data)
 }
 
 module.exports = {
-  connect: connect
+  listen: listen
 }

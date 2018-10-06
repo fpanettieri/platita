@@ -3,7 +3,7 @@
 const mongo  = require('../lib/mongo');
 const socket = require('../lib/socket');
 
-const Logger = new require('./logger').Logger;
+const Logger = require('../lib/logger');
 const logger = new Logger('[binance/archivist]');
 
 // Holder for Mongo instance
