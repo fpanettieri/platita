@@ -1,8 +1,8 @@
 'use strict';
 
-const crypto = require('crypto');
 const net = require('net');
-const mongodb = require('mongodb');
+
+const mongo = require('../lib/mongo');
 
 function cliHero ()
 {
@@ -107,17 +107,18 @@ function downloadHistory (symbol, interval)
 cliHelp();
 cliHero();
 
-// TODO: continue here!es
-const MongoClient = mongodb.MongoClient;
-MongoClient.connect(`${config.bd}://${config.server}:${config.port}`,{ useNewUrlParser: true }).then(onConnect).catch(utils.error);
+function openSocket ()
+{
+  const server = net.createServer(handleConnections);
+  server.on('error', handleErrors);
 
-const server = net.createServer(handleConnections);
-server.on('error', handleErrors);
+  let port = process.argv[2] || 0;
+  let host = process.argv[3] || '0.0.0.0';
 
-let port = process.argv[2] || 0;
-let host = process.argv[3] || '0.0.0.0';
+  server.listen(port, host, () => {
+    let addr = server.address();
+    console.log(`~> listening on ${addr.address}:${addr.port}`);
+  });
+}
 
-server.listen(port, host, () => {
-  let addr = server.address();
-  console.log(`~> listening on ${addr.address}:${addr.port}`);
-});
+mongo.connect();
