@@ -1,8 +1,8 @@
 'use strict';
 
-const net = require('net');
-
-const mongo = require('../lib/mongo');
+const mongo  = require('../lib/mongo');
+const socket = require('../lib/socket');
+const LOG_PREFIX = '[binance/archivist]';
 
 function cliHero ()
 {
@@ -22,22 +22,9 @@ function cliHelp ()
   process.exit();
 }
 
-function pack (data)
-{
-  return '<' + data + '>';
-}
-
-function unpack (data)
-{
-  if (data[0] !== '<' || data[data.length - 1] !== '>'){
-    throw 'malformed msg: ' + data;
-  }
-  return data.substring(1, data.length - 1).split(' ');
-}
-
 function handleConnections (client)
 {
-  console.log('~> client connected');
+  console.log(`${LOG_PREFIX} client connected`);
   client.setEncoding('utf-8');
 
   client.on('data', function (data) {
@@ -55,16 +42,8 @@ function handleConnections (client)
   });
 
   client.on('end', function () {
-    console.log('~> client disconnected');
+    console.log(`${LOG_PREFIX} client disconnected`);
   });
-}
-
-function handleErrors (err)
-{
-  if (err.code === 'EADDRINUSE') {
-    console.log('Another server is already listening on the requested port!');
-  }
-  throw err;
 }
 
 function downloadFirstCandle (symbol, interval)
@@ -106,19 +85,4 @@ function downloadHistory (symbol, interval)
 // -- Initialization
 cliHelp();
 cliHero();
-
-function openSocket ()
-{
-  const server = net.createServer(handleConnections);
-  server.on('error', handleErrors);
-
-  let port = process.argv[2] || 0;
-  let host = process.argv[3] || '0.0.0.0';
-
-  server.listen(port, host, () => {
-    let addr = server.address();
-    console.log(`~> listening on ${addr.address}:${addr.port}`);
-  });
-}
-
-mongo.connect();
+mongo.connect(() => socket.listen());
