@@ -4,7 +4,7 @@ const assert   = require('assert');
 const net      = require('net');
 const readline = require('readline');
 
-const Logger = new require('./lib/logger');
+const Logger = new require('../lib/logger');
 const logger = new Logger('[test/socket]');
 
 let running = true;
@@ -21,16 +21,17 @@ function runTest (test)
     case 3: { socket.write('<DownloadPartialHistory BTCUSDT 15m 2018-10-01') } break;
     default: { console.error ('Unknown test', test); }
   }
+
 }
 
 // -- Prompt
 
-assert(process.argv.length > 3);
+assert(process.argv.length > 2);
 let port = process.argv[2];
 let host = process.argv[3] || '0.0.0.0';
 socket = net.createConnection(port, host);
-socket.on('data', (data) => console.log(data));
-socket.on('error', (err) => console.error(error));
+socket.on('data', (data) => console.log('data received', data));
+socket.on('error', (err) => console.error('socket error', err));
 socket.on('end', () => { running = false; });
 
 const query = `
@@ -40,6 +41,5 @@ const query = `
 3. DownloadPartialHistory
 `;
 
-while (running) {
-  readline.question(query, runTest);
-}
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+rl.question(query, runTest);
