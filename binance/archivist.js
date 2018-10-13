@@ -84,10 +84,8 @@ function downloadHistory (symbol, interval)
 cliHelp();
 cliHero();
 
-
 mongo.connect((_db) => {
   db = _db;
-
   let port = process.argv[2] || 0;
   let host = process.argv[3] || '0.0.0.0';
   socket.listen(port, host, dispatchMsg);

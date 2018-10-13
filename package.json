@@ -5,7 +5,8 @@
   "author": "Fabio Panettieri",
   "private": true,
   "scripts": {
-    "start": "node main.js"
+    "start": "node binance/archivist.js",
+    "test": "node test.js"
   },
   "dependencies": {
     "mongodb": "3.1.6",
