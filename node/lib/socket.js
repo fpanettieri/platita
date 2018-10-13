@@ -44,14 +44,15 @@ function handleErrors (err)
 
 function pack (data)
 {
-  return '<' + data + '>';
+  return '<' + data.trim() + '>';
 }
 
 function unpack (data)
 {
+  data = data.trim();
   if (data[0] !== '<' || data[data.length - 1] !== '>'){
-    // FIXME: check if a throw is correct, or a better metod is preferred
-    console.log(data);
+    // FIXME: check if a throw is correct, or a better method is preferred
+    logger.log(data);
     throw 'malformed msg: ' + data;
   }
   return data.substring(1, data.length - 1).split(' ');
