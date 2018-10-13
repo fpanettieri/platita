@@ -2,6 +2,7 @@
 
 const mongo  = require('../lib/mongo');
 const socket = require('../lib/socket');
+const utils   = require('../lib/utils');
 
 const Logger = require('../lib/logger');
 const logger = new Logger('[binance/archivist]');
@@ -37,10 +38,6 @@ function dispatchMsg (msg)
 
     case "DownloadHistory": {
       downloadHistory(msg[1], msg[2]);
-    } break;
-
-    case "Profile": {
-      profile()
     } break;
   }
 }
@@ -81,14 +78,6 @@ function downloadFirstCandle (symbol, interval)
 function downloadHistory (symbol, interval)
 {
 
-}
-
-function profile ()
-{
-  logger.info('Platform:', process.platform);
-  logger.info('PID:', process.pid);
-  logger.info('Cpu:', process.cpuUsage());
-  logger.info('Mem:', process.memoryUsage());
 }
 
 // -- Initialization
