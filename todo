@@ -1,6 +1,15 @@
 =====================
   Todo
 =====================
+1. Init a symbol
+2. Download the full history of a pair
+3. Download the full history of many pairs
+4. Download the partial history of a pair
+5. Notify
+
+
+-- Strategy algorithm --
+. initialize all pairs
 . once all pairs have been initialized
   a. Launch the listener 'thread'
   b. Start fetching the history of each pair (queue based, single fetch thread?)
@@ -10,7 +19,12 @@
   c. Direction
 . after a candle has been analyzed, check if it's a buy / sell or ignore
 . notify the trader
-. Open / Close a position
+. check the current volume of the market
+. negotiate to find a position size
+. open position
+. set HARD SL
+. configure Soft SL, and Trailing SL activation point
+. keep listening to the market
 
 =====================
   Backlog
