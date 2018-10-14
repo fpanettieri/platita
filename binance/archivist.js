@@ -32,8 +32,8 @@ function dispatchMsg (msg, socket)
 {
   logger.log('dispatching msg', msg);
   switch (msg[0]) {
-    case "DownloadFirstCandle": {
-      downloadFirstCandle(msg[1], msg[2], socket);
+    case "DownloadMetadata": {
+      downloadMetadata(msg[1], msg[2], socket);
     } break;
 
     case "DownloadHistory": {
@@ -42,41 +42,27 @@ function dispatchMsg (msg, socket)
   }
 }
 
-function downloadFirstCandle (symbol, interval, socket)
+function downloadMetadata (symbol, interval, _socket)
 {
-  // check if the symbol is already initialized in mongo
-  // if not, download it
+  let id = `${symbol}_${interval}`;
+  let collection = db.collection('Binance_Metadata');
 
+  collection.findOne({'id': id})
+  .then(meta => {
+    if (meta) { return meta }
 
-  binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
-    if (error) {
-      backbone.emit('error', 'Symbol initialization failed: ', symbol, interval);
-    }
+    binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
+      if (error) { throw error; }
 
-    throw 'Persist this data in mongo';
+      return collection.insertOne({id: {
+        first: ticks[0][0],
+        step: ticks[1][0] - ticks[0][0]
+      }});
 
-    db[symbol].meta = {
-      first: ticks[0][0],
-      step: ticks[1][0] - ticks[0][0]
-    };
-
-    let lifetime = Date.now() - ticks[0][0];
-    let candles = Math.trunc(lifetime / db[symbol].meta.step);
-
-    logger.log(`[${symbol}:${interval}] Life: ${lifetime}\tCandles: ${candles}`);
-
-    // throw 'CONTINUE HERE'
-    // TODO: Read about proper event cycles, implement it here.
-    // Notify other modules that the symbol has been initialized properly
-    // Archivist: download the old history of the symbol
-    // Watcher: watch the market in real time, store the candles in the database
-    // Analyst: After each candle arrives
-
-    // socket.write(`SymbolInitialized ${symbol} ${interval}`);
-  }, {
-    limit: 2,
-    startTime: 0
-  });
+    }, { limit: 2, startTime: 0 });
+  })
+  .then(meta => socket.send(_socket, `MetadataDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}`))
+  .catch(err => logger.error(err));
 }
 
 function downloadHistory (symbol, interval)
