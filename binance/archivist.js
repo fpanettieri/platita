@@ -64,11 +64,10 @@ function downloadMetadata (symbol, interval, _socket)
           id: id,
           first: ticks[0][0],
           step: ticks[1][0] - ticks[0][0]
-        }, function(err, result) {
+        }, function(err, res) {
           if (err) { reject(err); }
-
           logger.info(`${id} metadata stored`);
-          resolve(result);
+          resolve(res.ops[0]);
         });
 
       }, { limit: 2, startTime: 0 });
