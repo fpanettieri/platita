@@ -21,9 +21,8 @@ function runTest (test)
 {
   switch (test.trim()) {
     case '0': { running = false; } break;
-    case '1': { socket.write('<DownloadFirstCandle BTCUSDT 15m>') } break;
-    case '2': { socket.write('<DownloadFullHistory BTCUSDT 15m>') } break;
-    case '3': { socket.write('<DownloadPartialHistory BTCUSDT 15m 2018-10-01>') } break;
+    case '1': { socket.write('<DownloadFullHistory BTCUSDT 15m>') } break;
+    case '2': { socket.write('<DownloadPartialHistory BTCUSDT 15m 2018-10-01>') } break;
     default: { logger.error ('Unknown test', test); }
   }
 
