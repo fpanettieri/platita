@@ -1,13 +1,15 @@
 'use strict';
 
-const mongo  = require('../lib/mongo');
-const socket = require('../lib/socket');
-const utils   = require('../lib/utils');
+const mongo       = require('../lib/mongo');
+const socket      = require('../lib/socket');
+const utils       = require('../lib/utils');
+const binance_api = require('./api');
 
 const Logger = require('../lib/logger');
 const logger = new Logger('[binance/archivist]');
 
-// Holder for Mongo Database instance
+// Instance holders
+let binance = null;
 let db = null;
 
 function cliHero ()
@@ -44,8 +46,8 @@ function dispatchMsg (msg, socket)
 
 function downloadMetadata (symbol, interval, _socket)
 {
-  let id = `${symbol}_${interval}`;
-  let collection = db.collection('Binance_Metadata');
+  const id = `${symbol}_${interval}`;
+  const collection = db.collection('Binance_Metadata');
 
   collection.findOne({'id': id})
   .then(meta => {
@@ -74,6 +76,7 @@ function downloadHistory (symbol, interval)
 cliHelp();
 cliHero();
 
+binance = binance_api.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);
 mongo.connect((_db) => {
   db = _db;
   let port = process.argv[2] || 0;

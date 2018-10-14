@@ -1,16 +1,21 @@
 'use strict';
 
-const nba = require('node-binance-api');
+const node_api = require('node-binance-api');
+
+const Logger = require('../lib/logger');
+const logger = new Logger('[binance/api]');
 
 function init (key, secret, sandbox, verbose = false)
 {
-  let binance = nba().options({
+  logger.info('instantiating binance api');
+  let binance = node_api().options({
     APIKEY: key,
     APISECRET: secret,
     useServerTime: true,
     test: sandbox,
     verbose: verbose
   });
+  logger.info('binance api ready');
 
   return binance;
 }
