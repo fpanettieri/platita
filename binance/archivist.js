@@ -3,7 +3,7 @@
 const mongo       = require('../lib/mongo');
 const socket      = require('../lib/socket');
 const utils       = require('../lib/utils');
-const binance_api = require('./api');
+const binance_api = require('../lib/binance');
 
 const Logger = require('../lib/logger');
 const logger = new Logger('[binance/archivist]');
@@ -53,15 +53,26 @@ function downloadMetadata (symbol, interval, _socket)
   .then(meta => {
     if (meta) { return meta }
 
-    binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
-      if (error) { throw error; }
+    logger.info(`${id} metadata not found`);
+    return new Promise(function(resolve, reject) {
 
-      return collection.insertOne({id: {
-        first: ticks[0][0],
-        step: ticks[1][0] - ticks[0][0]
-      }});
+      binance.candlesticks(symbol, interval, function (error, ticks, _symbol) {
+        if (error) { reject (error); }
 
-    }, { limit: 2, startTime: 0 });
+        logger.info(`${id} metadata received`);
+        collection.insertOne({
+          id: id,
+          first: ticks[0][0],
+          step: ticks[1][0] - ticks[0][0]
+        }, function(err, result) {
+          if (err) { reject(err); }
+
+          logger.info(`${id} metadata stored`);
+          resolve(result);
+        });
+
+      }, { limit: 2, startTime: 0 });
+    });
   })
   .then(meta => socket.send(_socket, `MetadataDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}`))
   .catch(err => logger.error(err));

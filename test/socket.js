@@ -13,7 +13,7 @@ let port = process.argv[2];
 let host = process.argv[3] || '0.0.0.0';
 
 let socket = net.createConnection(port, host);
-socket.on('data', (data) => logger.log('data received', data));
+socket.on('data', (data) => logger.log('data received', data.toString('utf8')));
 socket.on('error', (err) => logger.error('socket error', err));
 socket.on('close', () => logger.log('connection closed'));
 
