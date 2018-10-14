@@ -12,18 +12,20 @@ assert(process.argv.length > 2);
 let port = process.argv[2];
 let host = process.argv[3] || '0.0.0.0';
 
+let socket = net.createConnection(port, host);
+socket.on('data', (data) => logger.log('data received', data));
+socket.on('error', (err) => logger.error('socket error', err));
+socket.on('close', () => logger.log('connection closed'));
+
 function runTest (test)
 {
-  let socket = net.createConnection(port, host, () => {
-    switch (test.trim()) {
-      case '0': { running = false; } break;
-      case '1': { socket.write('<DownloadFirstCandle BTCUSDT 15m>') } break;
-      case '2': { socket.write('<DownloadFullHistory BTCUSDT 15m>') } break;
-      case '3': { socket.write('<DownloadPartialHistory BTCUSDT 15m 2018-10-01>') } break;
-      default: { logger.error ('Unknown test', test); }
-    }
-    socket.destroy();
-  });
+  switch (test.trim()) {
+    case '0': { running = false; } break;
+    case '1': { socket.write('<DownloadFirstCandle BTCUSDT 15m>') } break;
+    case '2': { socket.write('<DownloadFullHistory BTCUSDT 15m>') } break;
+    case '3': { socket.write('<DownloadPartialHistory BTCUSDT 15m 2018-10-01>') } break;
+    default: { logger.error ('Unknown test', test); }
+  }
 
   rl.prompt();
 }

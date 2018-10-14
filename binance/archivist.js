@@ -44,9 +44,8 @@ function dispatchMsg (msg, socket)
 
 function downloadFirstCandle (symbol, interval, socket)
 {
-  socket.write('<watch out>');
-  return
   // check if the symbol is already initialized in mongo
+  // if not, download it
 
 
   binance.candlesticks(symbol, interval, (error, ticks, _symbol) => {
