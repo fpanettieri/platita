@@ -92,13 +92,18 @@ async function downloadHistory (symbol, interval, from, to, _socket)
     const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
     logger.log(`life: ${lifetime}\tcandles: ${candles}\t fetches: ${fetches}`);
 
+    await collection.deleteMany({t: { $gte: from_t, $lte: to_t }});
+    logger.info(`${id} removed duplicates`);
+
     for (let i = 0; i < fetches; i++) {
       let options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
       let ticks = await binance.candlesticks(Binance, symbol, interval, options);
-      let ticks_objs = ticks.map((k) => { return {t: k[0], data: k} });
-      const result = await collection.insertMany(ticks_objs);
+
+      let ticks_objs = ticks.map((k) => binance.candleToObj(k));
+      await collection.insertMany(ticks_objs);
       logger.info(`${id} ${i + 1}/${fetches}`);
     }
+    logger.info(`${id} history updated`);
 
     socket.send(_socket, `HistoryDownloaded ${symbol} ${interval} ${from_t} ${to_t}`);
   } catch (err) {
