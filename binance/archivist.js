@@ -1,15 +1,15 @@
 'use strict';
 
-const mongo       = require('../lib/mongo');
-const socket      = require('../lib/socket');
-const utils       = require('../lib/utils');
-const binance_api = require('../lib/binance');
+const mongo   = require('../lib/mongo');
+const socket  = require('../lib/socket');
+const utils   = require('../lib/utils');
+const binance = require('../lib/binance');
 
 const Logger = require('../lib/logger');
 const logger = new Logger('[binance/archivist]');
 
 // Instance holders
-let binance = null;
+let Binance = null;
 let db = null;
 
 function cliHero ()
@@ -38,47 +38,54 @@ function dispatchMsg (msg, socket)
       downloadMetadata(msg[1], msg[2], socket);
     } break;
 
-    case "DownloadHistory": {
-      downloadHistory(msg[1], msg[2], socket);
+    case "DownloadFullHistory": {
+      downloadHistory(msg[1], msg[2], 0, Date.now(), socket);
+    } break;
+
+    case "DownloadPartialHistory": {
+      downloadHistory(msg[1], msg[2], msg[3], msg[4], socket);
     } break;
   }
 }
 
-function downloadMetadata (symbol, interval, _socket)
+async function downloadMetadata (symbol, interval, _socket)
 {
   const id = `${symbol}_${interval}`;
   const collection = db.collection('Binance_Metadata');
 
-  collection.findOne({'id': id})
-  .then(meta => {
-    if (meta) { return meta }
-
+  try {
+    const cached = await collection.findOne({'id': id});
+    if (cached) { socket.send(_socket, `MetadataDownloaded ${symbol} ${interval} ${cached.first} ${cached.step}`); return; }
     logger.info(`${id} metadata not found`);
-    return new Promise(function(resolve, reject) {
 
-      binance.candlesticks(symbol, interval, function (error, ticks, _symbol) {
-        if (error) { reject (error); }
+    const options = { limit: 2, startTime: 0 };
+    const ticks = await binance.candlesticks(Binance, symbol, interval, options);
+    logger.info(`${id} metadata received`);
 
-        logger.info(`${id} metadata received`);
-        collection.insertOne({
-          id: id,
-          first: ticks[0][0],
-          step: ticks[1][0] - ticks[0][0]
-        }, function(err, res) {
-          if (err) { reject(err); }
-          logger.info(`${id} metadata stored`);
-          resolve(res.ops[0]);
-        });
+    const meta = { id: id, first: ticks[0][0], step: ticks[1][0] - ticks[0][0] };
+    const result = await collection.insertOne(meta);
+    logger.info(`${id} metadata stored`);
 
-      }, { limit: 2, startTime: 0 });
-    });
-  })
-  .then(meta => socket.send(_socket, `MetadataDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}`))
-  .catch(err => logger.error(err));
+    socket.send(_socket, `MetadataDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}`);
+  } catch (err) {
+    logger.log(err);
+  }
 }
 
-function downloadHistory (symbol, interval)
+async function downloadHistory (symbol, interval, from, to, _socket)
 {
+  const id = `${symbol}_${interval}`;
+  const metadata = db.collection('Binance_Metadata');
+
+  const meta = await metadata.findOne({'id': id});
+
+  const collection = db.collection(`Binance_${symbol}_${interval}`);
+
+  const f = (new Date(from)).getTime();
+  const t = (new Date(to)).getTime();
+  // const
+
+  console.log()
 
 }
 
@@ -86,7 +93,7 @@ function downloadHistory (symbol, interval)
 cliHelp();
 cliHero();
 
-binance = binance_api.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);
+Binance = binance.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);
 mongo.connect((_db) => {
   db = _db;
   let port = process.argv[2] || 0;
