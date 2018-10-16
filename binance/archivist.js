@@ -95,14 +95,12 @@ async function downloadHistory (symbol, interval, from, to, _socket)
     for (let i = 0; i < fetches; i++) {
       let options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
       let ticks = await binance.candlesticks(Binance, symbol, interval, options);
-      logger.info(`${id} fetching ${i}/${fetches}`);
-
       let ticks_objs = ticks.map((k) => { return {t: k[0], data: k} });
       const result = await collection.insertMany(ticks_objs);
-      logger.info(`${id} stored ${i}/${fetches}`);
+      logger.info(`${id} ${i + 1}/${fetches}`);
     }
 
-    socket.send(_socket, `HistoryDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}`);
+    socket.send(_socket, `HistoryDownloaded ${symbol} ${interval} ${from_t} ${to_t}`);
   } catch (err) {
     logger.log(err);
   }
