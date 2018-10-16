@@ -75,18 +75,21 @@ async function downloadMetadata (symbol, interval, _socket)
 async function downloadHistory (symbol, interval, from, to, _socket)
 {
   const id = `${symbol}_${interval}`;
-  const metadata = db.collection('Binance_Metadata');
+  const from_t = (new Date(from)).getTime();
+  const to_t = (new Date(to)).getTime();
 
-  const meta = await metadata.findOne({'id': id});
+  try {
+    const meta_col = db.collection('Binance_Metadata');
+    const metadata = await meta_col.findOne({'id': id});
+    if (!metadata) { throw `${id} metadata not found`; }
 
-  const collection = db.collection(`Binance_${symbol}_${interval}`);
+    const lifetime = Date.now() - metadata.first;
+    const candles = Math.trunc(lifetime / metadata.step);
+    console.log(`life: ${lifetime}\tcandles: ${candles}`);
 
-  const f = (new Date(from)).getTime();
-  const t = (new Date(to)).getTime();
-  // const
-
-  console.log()
-
+  } catch (err) {
+    logger.log(err);
+  }
 }
 
 // -- Initialization
