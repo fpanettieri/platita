@@ -8,6 +8,8 @@ const binance = require('../lib/binance');
 const Logger = require('../lib/logger');
 const logger = new Logger('[binance/archivist]');
 
+const CANDLESTICKS_LIMIT = 500;
+
 // Instance holders
 let Binance = null;
 let db = null;
@@ -74,19 +76,33 @@ async function downloadMetadata (symbol, interval, _socket)
 
 async function downloadHistory (symbol, interval, from, to, _socket)
 {
-  const id = `${symbol}_${interval}`;
-  const from_t = (new Date(from)).getTime();
-  const to_t = (new Date(to)).getTime();
-
   try {
+    const id = `${symbol}_${interval}`;
     const meta_col = db.collection('Binance_Metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }
 
-    const lifetime = Date.now() - metadata.first;
-    const candles = Math.trunc(lifetime / metadata.step);
-    console.log(`life: ${lifetime}\tcandles: ${candles}`);
+    const from_t = from ? (new Date(from)).getTime() : metadata.first;
+    const to_t = to ? (new Date(to)).getTime() : Date.now();
+    if (from_t > to_t) { throw `invalid time interval: from ${from} to ${to}`; }
 
+    const collection = db.collection(`Binance_${id}`);
+    const lifetime = to_t - from_t;
+    const candles = Math.trunc(lifetime / metadata.step);
+    const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
+    logger.log(`life: ${lifetime}\tcandles: ${candles}\t fetches: ${fetches}`);
+
+    for (let i = 0; i < fetches; i++) {
+      let options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
+      let ticks = await binance.candlesticks(Binance, symbol, interval, options);
+      logger.info(`${id} fetching ${i}/${fetches}`);
+
+      let ticks_objs = ticks.map((k) => { return {t: k[0], data: k} });
+      const result = await collection.insertMany(ticks_objs);
+      logger.info(`${id} stored ${i}/${fetches}`);
+    }
+
+    socket.send(_socket, `HistoryDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}`);
   } catch (err) {
     logger.log(err);
   }
