@@ -33,7 +33,37 @@ function dispatchMsg (msg, socket)
 {
   logger.log('dispatching msg', msg);
   switch (msg[0]) {
+    case "WatchSymbols": {
+      watchSymbols(msg[1], msg[2], socket);
+    } break;
+  }
+}
 
+function watchSymbols (symbols, interval, _socket)
+{
+  try {
+    const symbols_arr = symbols.split(',').map(s => s.trim());
+    console.log('now watching:', symbols_arr)
+
+    Binance.websockets.candlesticks(symbols_arr, interval, (candlesticks) => {
+
+      let { e:eventType, E:eventTime, s:symbol, k:ticks } = candlesticks;
+      let { o:open, h:high, l:low, c:close, v:volume, n:trades, i:interval, x:isFinal, q:quoteVolume, V:buyVolume, Q:quoteBuyVolume } = ticks;
+
+      console.log(`${eventType} ${eventTime} ${symbol}`);
+
+      console.log("open: " + open);
+      console.log("high: " + high);
+      console.log("low: " + low);
+      console.log("close: " + close);
+      console.log("volume: " + volume);
+      console.log("isFinal: " + isFinal);
+
+      console.log('\n\n');
+    });
+
+  } catch (err) {
+    logger.log(err);
   }
 }
 

@@ -11,6 +11,8 @@ const logger = new Logger('[test/socket]');
 assert(process.argv.length > 2);
 let port = process.argv[2];
 let host = process.argv[3] || '0.0.0.0';
+let symbol = process.argv[4] || 'POEBTC';
+let interval = process.argv[5] || '1m';
 
 let socket = net.createConnection(port, host);
 socket.on('data', (data) => logger.log('data received', data.toString('utf8')));
@@ -21,9 +23,11 @@ function runTest (test)
 {
   switch (test.trim()) {
     case '0': { running = false; } break;
-    case '1': { socket.write('<DownloadMetadata POEBTC 15m>') } break;
-    case '2': { socket.write('<DownloadFullHistory POEBTC 15m>') } break;
-    case '3': { socket.write('<DownloadPartialHistory POEBTC 15m 2018-10-01>') } break;
+    case '1': { socket.write(`<DownloadMetadata ${symbol} ${interval}>`) } break;
+    case '2': { socket.write(`<DownloadFullHistory ${symbol} ${interval}>`) } break;
+    case '3': { socket.write(`<DownloadPartialHistory ${symbol} ${interval} 2018-10-01>`) } break;
+    case '4': { socket.write(`<WatchSymbols ${symbol} ${interval}>`) } break;
+    case '5': { socket.write(`<IgnoreSymbol ${symbol} ${interval}>`) } break;
     default: { logger.error ('Unknown test', test); }
   }
 
@@ -32,9 +36,11 @@ function runTest (test)
 
 // -- Init
 const prompt = `
-1. DownloadMetadata
-2. DownloadFullHistory
-3. DownloadPartialHistory
+1. DownloadMetadata ${symbol} ${interval}
+2. DownloadFullHistory ${symbol} ${interval}
+3. DownloadPartialHistory ${symbol} ${interval} 2018-10-01
+4. WatchSymbols ${symbol} ${interval}
+5. IgnoreSymbol ${symbol} ${interval}
 > `;
 
 const rl = readline.createInterface({
