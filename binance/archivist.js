@@ -2,7 +2,6 @@
 
 const mongo   = require('../lib/mongo');
 const socket  = require('../lib/socket');
-const utils   = require('../lib/utils');
 const binance = require('../lib/binance');
 
 const Logger = require('../lib/logger');

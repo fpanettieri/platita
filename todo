@@ -1,23 +1,10 @@
 =====================
   Todo
 =====================
-1. Init a symbol
-2. Download the full history of a pair
-3. Download the full history of many pairs
-4. Download the partial history of a pair
-5. Notify
-
-//
-let lifetime = Date.now() - ticks[0][0];
-let candles = Math.trunc(lifetime / db[symbol].meta.step);
-
-
-// throw 'CONTINUE HERE'
-// TODO: Read about proper event cycles, implement it here.
-// Notify other modules that the symbol has been initialized properly
-// Archivist: download the old history of the symbol
-// Watcher: watch the market in real time, store the candles in the database
-// Analyst: After each candle arrives
+// - Notify other modules that the symbol has been initialized properly
+// - Archivist: download the old history of the symbol
+// - Watcher: watch the market in real time, store the candles in the database
+// - Analyst: After each candle arrives
 
 
 -- Strategy algorithm --
@@ -66,7 +53,12 @@ let candles = Math.trunc(lifetime / db[symbol].meta.step);
 . Real time client for candles
   . Publish the new data in a socket or something ??
 
-
 =====================
   Done
 =====================
+- Read about proper event cycles, implement it here
+- Init a symbol
+- Download the full history of a pair
+- Download the full history of many pairs
+- Download the partial history of a pair
+- Notify
