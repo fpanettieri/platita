@@ -52,7 +52,7 @@ function watchSymbols (symbols, interval, _socket)
       // Store closed candles
       if (!c.x) { return }
       const collection = db.collection(`Binance_${c.s}_${c.i}`);
-      collection.updateOne({t: c.t}, c, {upsert: true});
+      collection.replaceOne({t: c.t}, c, {upsert: true});
     });
 
   } catch (err) {
