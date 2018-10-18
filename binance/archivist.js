@@ -99,8 +99,6 @@ async function downloadHistory (symbol, interval, from, to, _socket)
 
       let ticks_objs = ticks.map((k) => binance.candleToObj(k));
       await collection.insertMany(ticks_objs);
-
-      logger.info(`${id} ${i + 1}/${fetches}`);
       socket.send(_socket, `HistoryPartiallyDownloaded ${symbol} ${interval} ${i + 1} ${fetches}`);
     }
 
