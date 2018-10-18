@@ -33,7 +33,6 @@ function cliHelp ()
 
 function dispatchMsg (msg, socket)
 {
-  logger.log('dispatching msg', msg);
   switch (msg[0]) {
     case "DownloadMetadata": {
       downloadMetadata(msg[1], msg[2], socket);

@@ -31,7 +31,6 @@ function cliHelp ()
 
 function dispatchMsg (msg, socket)
 {
-  logger.log('dispatching msg', msg);
   switch (msg[0]) {
     case "WatchSymbols": {
       watchSymbols(msg[1], msg[2], socket);
@@ -53,7 +52,7 @@ function watchSymbols (symbols, interval, _socket)
       // Store closed candles
       if (!c.x) { return }
       const collection = db.collection(`Binance_${c.s}_${c.i}`);
-      collection.update({t: c.t}, c, {upsert: true});
+      collection.updateOne({t: c.t}, c, {upsert: true});
     });
 
   } catch (err) {
