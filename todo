@@ -37,6 +37,9 @@
 =====================
   Backlog
 =====================
+. In production mode, dont log anything
+. Profile and detect performance problems and memory usage
+
 . Launch thread that listens to the market
 
 . Store new candles in a 'mem-db'

@@ -27,7 +27,6 @@ function runTest (test)
     case '2': { socket.write(`<DownloadFullHistory ${symbol} ${interval}>`) } break;
     case '3': { socket.write(`<DownloadPartialHistory ${symbol} ${interval} 2018-10-01>`) } break;
     case '4': { socket.write(`<WatchSymbols ${symbol} ${interval}>`) } break;
-    case '5': { socket.write(`<IgnoreSymbol ${symbol} ${interval}>`) } break;
     default: { logger.error ('Unknown test', test); }
   }
 
@@ -40,7 +39,6 @@ const prompt = `
 2. DownloadFullHistory ${symbol} ${interval}
 3. DownloadPartialHistory ${symbol} ${interval} 2018-10-01
 4. WatchSymbols ${symbol} ${interval}
-5. IgnoreSymbol ${symbol} ${interval}
 > `;
 
 const rl = readline.createInterface({

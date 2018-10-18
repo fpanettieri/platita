@@ -43,23 +43,18 @@ function watchSymbols (symbols, interval, _socket)
 {
   try {
     const symbols_arr = symbols.split(',').map(s => s.trim());
-    console.log('now watching:', symbols_arr)
+    logger.log('now watching', symbols_arr);
 
-    Binance.websockets.candlesticks(symbols_arr, interval, (candlesticks) => {
+    Binance.websockets.candlesticks(symbols_arr, interval, (candlestick) => {
+      const c = candlestick.k;
 
-      let { e:eventType, E:eventTime, s:symbol, k:ticks } = candlesticks;
-      let { o:open, h:high, l:low, c:close, v:volume, n:trades, i:interval, x:isFinal, q:quoteVolume, V:buyVolume, Q:quoteBuyVolume } = ticks;
+      const e = c.x ? 'CandlestickClosed' : 'CandlestickUpdated';
+      socket.send(_socket, `${e} ${c.s} ${c.i} ${c.t} ${c.o} ${c.h} ${c.l} ${c.c} ${c.v} ${c.T} ${c.q} ${c.n} ${c.V} ${c.Q}`);
 
-      console.log(`${eventType} ${eventTime} ${symbol}`);
-
-      console.log("open: " + open);
-      console.log("high: " + high);
-      console.log("low: " + low);
-      console.log("close: " + close);
-      console.log("volume: " + volume);
-      console.log("isFinal: " + isFinal);
-
-      console.log('\n\n');
+      // Store closed candles
+      if (!tick.x) { return }
+      const collection = db.collection(`Binance_${tick.s}_${interval}`);
+      collection.update({t: tick.t}, tick, {upsert: true});
     });
 
   } catch (err) {
