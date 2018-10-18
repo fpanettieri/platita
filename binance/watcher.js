@@ -47,14 +47,13 @@ function watchSymbols (symbols, interval, _socket)
 
     Binance.websockets.candlesticks(symbols_arr, interval, (candlestick) => {
       const c = candlestick.k;
-
       const e = c.x ? 'CandlestickClosed' : 'CandlestickUpdated';
       socket.send(_socket, `${e} ${c.s} ${c.i} ${c.t} ${c.o} ${c.h} ${c.l} ${c.c} ${c.v} ${c.T} ${c.q} ${c.n} ${c.V} ${c.Q}`);
 
       // Store closed candles
-      if (!tick.x) { return }
-      const collection = db.collection(`Binance_${tick.s}_${interval}`);
-      collection.update({t: tick.t}, tick, {upsert: true});
+      if (!c.x) { return }
+      const collection = db.collection(`Binance_${c.s}_${c.i}`);
+      collection.update({t: c.t}, tick, {upsert: true});
     });
 
   } catch (err) {
