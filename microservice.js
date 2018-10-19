@@ -1,20 +1,20 @@
 'use strict';
 
-const mongo  = require('../lib/mongo');
-const socket = require('../lib/socket');
-const logger = require('../lib/logger');
+const mongo  = require('./lib/mongo');
+const socket = require('./lib/socket');
+const Logger = require('./lib/logger');
 
 async function start (name, domain, dispatcher)
 {
-  const logger = new logger(`[${domain}/${name}]`);
+  const logger = new Logger(`[${domain}/${name}]`);
 
   if (process.argv[2] === '-h') {
     logger.log(`\nusage: node ${name} <port> <host>\n`);
     process.exit();
     return;
   }
-  logger.info (`${name} starting`);
 
+  logger.info (`${name} starting`);
   const db = await mongo.connect();
 
   const port = process.argv[2] || 0;
