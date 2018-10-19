@@ -9,7 +9,6 @@ let ms = null;
 
 function dispatchMsg (msg, socket)
 {
-  ms.logger.log('magic');
   switch (msg[0]) {
 
   }
