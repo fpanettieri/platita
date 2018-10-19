@@ -3,6 +3,8 @@
 const microservice = require('../microservice');
 const binance = require('../lib/binance');
 
+// -- Holders
+let Binance = null;
 let ms = null;
 
 function dispatchMsg (msg, socket)
@@ -13,5 +15,6 @@ function dispatchMsg (msg, socket)
   }
 }
 
+// -- Initialization
 microservice.start('analyst', 'binance', dispatchMsg).then(_ms => ms = _ms);
-let Binance = binance.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);
+Binance = binance.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);
