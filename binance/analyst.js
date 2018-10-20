@@ -10,7 +10,17 @@ let ms = null;
 function dispatchMsg (msg, socket)
 {
   switch (msg[0]) {
+    case "AddIndicator": {
+      // downloadMetadata(msg[1], msg[2], socket);
+    } break;
 
+    case "ListIndicators": {
+      // downloadMetadata(msg[1], msg[2], socket);
+    } break;
+
+    case "RemoveIndicator": {
+      // downloadMetadata(msg[1], msg[2], socket);
+    } break;
   }
 }
 
