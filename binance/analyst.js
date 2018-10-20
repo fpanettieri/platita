@@ -1,6 +1,7 @@
 'use strict';
 
 const microservice = require('../core/microservice');
+const indicators = require('../core/indicators');
 const binance = require('../lib/binance');
 
 // -- Holders
