@@ -35,10 +35,15 @@ function runTest (test)
 
 // -- Init
 const prompt = `
-1. DownloadMetadata ${symbol} ${interval}
-2. DownloadFullHistory ${symbol} ${interval}
-3. DownloadPartialHistory ${symbol} ${interval} 2018-10-01
-4. WatchSymbols ${symbol} ${interval}
+ 1. DownloadMetadata ${symbol} ${interval}
+ 2. DownloadFullHistory ${symbol} ${interval}
+ 3. DownloadPartialHistory ${symbol} ${interval} 2018-10-01
+ 4. WatchSymbols ${symbol} ${interval}
+ 5. AddIndicator SMA 20
+ 6. ListIndicators
+ 7. RemoveIndicator 0
+ 8. AnalyzeCandle POEBTC 15m ....
+ 9. AnalyzeLastCandle POEBTC 15m
 > `;
 
 const rl = readline.createInterface({

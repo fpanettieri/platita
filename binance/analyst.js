@@ -8,21 +8,28 @@ const binance = require('../lib/binance');
 let Binance = null;
 let ms = null;
 
+const indicators = [];
+
 function dispatchMsg (msg, socket)
 {
   switch (msg[0]) {
     case "AddIndicator": {
-      // downloadMetadata(msg[1], msg[2], socket);
+      addIndicator(msg, socket);
     } break;
 
     case "ListIndicators": {
-      // downloadMetadata(msg[1], msg[2], socket);
+      listIndicators(socket);
     } break;
 
     case "RemoveIndicator": {
-      // downloadMetadata(msg[1], msg[2], socket);
+      removeIndicator(msg[1], socket);
     } break;
   }
+}
+
+function addIndicator (msg, socket)
+{
+  
 }
 
 // -- Initialization
