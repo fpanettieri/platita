@@ -1,6 +1,6 @@
 'use strict';
 
-const microservice = require('../microservice');
+const microservice = require('../core/microservice');
 const binance = require('../lib/binance');
 
 const CANDLESTICKS_LIMIT = 500;

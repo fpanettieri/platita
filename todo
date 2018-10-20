@@ -3,7 +3,6 @@
 =====================
 // - Analyst: After each candle arrives
 
-
 -- Strategy algorithm --
 . initialize all pairs
 . once all pairs have been initialized
@@ -41,6 +40,7 @@
 
 . Calculate EMA50
 . Calculate VixFix
+. Calculate BB
 . Enter positions
 . Track positions
 . Set SL Immediately
@@ -52,6 +52,8 @@
 . Real time visualization of EVERYTHING
 . Real time client for candles
   . Publish the new data in a socket or something ??
+. Twilio notifications about interesting setups
+. Full market analysis (check every coin, add every)
 
 =====================
   Done

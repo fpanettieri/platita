@@ -1,8 +1,8 @@
 'use strict';
 
-const mongo  = require('./lib/mongo');
-const socket = require('./lib/socket');
-const Logger = require('./lib/logger');
+const mongo  = require('../lib/mongo');
+const socket = require('../lib/socket');
+const Logger = require('../lib/logger');
 
 async function start (name, domain, dispatcher)
 {
