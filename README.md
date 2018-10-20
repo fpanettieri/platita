@@ -32,6 +32,9 @@ Required for running the engine
 https://www.npmjs.com/package/pm2  
 Production process manager for Node.JS applications with a built-in load balancer
 
+## Canvas  
+https://www.npmjs.com/package/canvas
+
 ## MongoDB
 https://docs.mongodb.com/manual/installation/#supported-platforms
 MongoDB is a foss document-oriented NoSQL db. MongoDB uses JSON-like documents with schemas.

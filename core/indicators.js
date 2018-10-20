@@ -4,7 +4,7 @@ const mongo  = require('../lib/mongo');
 const socket = require('../lib/socket');
 const Logger = require('../lib/logger');
 
-function sma (candles, lengthvalue, )
+function sma (value, )
 {
 
 
