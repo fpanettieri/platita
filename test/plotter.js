@@ -5,22 +5,21 @@ const Canvas = require("canvas");
 
 const mongo  = require('../lib/mongo');
 const Logger = require('../lib/logger');
+const logger = new Logger(`[test/plotter]`);
 
 const cfg = require('../cfg/plotter.json');
 
 async function plot (symbol, interval, from, to)
 {
-  const logger = new Logger(`[test/plotter]`);
-
   const from_t = (new Date(from)).getTime();
   const to_t = (new Date(to)).getTime();
+  logger.info ('plotting', symbol, interval, from_t, to_t);
 
-  logger.info ('plotter starting');
   const db = await mongo.connect();
   const collection = db.collection(`Binance_${symbol}_${interval}`);
-  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }});
+  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
 
-  logger.log(candles.length);
+  logger.log(candles);
 
 }
 
