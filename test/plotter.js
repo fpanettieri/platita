@@ -8,22 +8,26 @@ const Logger = require('../lib/logger');
 
 const cfg = require('../cfg/plotter.json');
 
-async function plot (symbol, interval)
+async function plot (symbol, interval, from, to)
 {
   const logger = new Logger(`[test/plotter]`);
 
+  const from_t = (new Date(from)).getTime();
+  const to_t = (new Date(to)).getTime();
+
   logger.info ('plotter starting');
   const db = await mongo.connect();
-  const col = db.collection(`Binance_${symbol}_${interval}`);
-  const await col.find({t: { $gte: from, $lte: to }});
+  const collection = db.collection(`Binance_${symbol}_${interval}`);
+  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }});
 
+  logger.log(candles.length);
 
 }
 
- to ?
 const symbol = process.argv[2] || 'BTCUSDT';
-const interval = process.argv[3] || '15m';
-const from = process.argv[4] ? (new Date(process.argv[4])).getTime() : Date.now();
+const interval = process.argv[3] || '1D';
+const from = process.argv[4] || 0 ;
+const to = process.argv[5] || Date.now();
 
 plot (symbol, interval, from, to);
 
