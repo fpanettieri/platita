@@ -1,8 +1,10 @@
 {
-  "prefix": "mongodb://",
-  "credentials": "",
-  "host": "localhost" ,
-  "port": 27017,
-  "database": "platita",
-  "options": ""
+  "gutter": {
+    "horizontal": 200,
+    "vertical": 50
+  },
+
+  "candles": {
+    "width": 4,
+  }
 }

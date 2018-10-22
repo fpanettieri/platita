@@ -17,24 +17,18 @@ async function plot (symbol, interval, from, to)
 
   const db = await mongo.connect();
   const collection = db.collection(`Binance_${symbol}_${interval}`);
+  logger.log(`plotting Binance_${symbol}_${interval}`);
+
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
-
   logger.log(candles);
-
 }
 
 const symbol = process.argv[2] || 'BTCUSDT';
-const interval = process.argv[3] || '1D';
+const interval = process.argv[3] || '1d';
 const from = process.argv[4] || 0 ;
 const to = process.argv[5] || Date.now();
 
 plot (symbol, interval, from, to);
-
-// get pair from argv
-// get startDate and endDate from argv
-// fetch data from mongo
-
-
 
 
 // const canvas = new Canvas(200, 200, "png");
