@@ -22,9 +22,12 @@ async function plot (symbol, interval, from, to)
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
   logger.log(candles);
 
-  const width = cfg.gutter.horizontal + candles.length * (cfg.candles.width + cfg.candles.margin);
+  const img_size = {
+    w: cfg.gutter.horizontal + candles.length * (cfg.candles.width + cfg.candles.margin),
+    h: cfg.gutter.vertical + cfg.height
+  }
 
-
+  const canvas = new Canvas(img_size.w, img_size.h, 'png');
 }
 
 const symbol = process.argv[2] || 'BTCUSDT';

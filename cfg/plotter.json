@@ -1,14 +1,30 @@
 {
+  "height": 400,
+  
   "gutter": {
     "horizontal": 200,
     "vertical": 50
   },
 
+  "bg": "#fff2cc",
+  "grid": {
+    "color": "#888",
+  },
+
   "candles": {
-    "bg": "#ff9900",
-    "up": "#fff",
-    "black": "#000",
     "width": 4,
-    "margin": 2
+    "margin": 2,
+    "up": {
+      "body": "#fff",
+      "border": "#222",
+      "wick": "#222",
+      "stroke": 1
+    },
+    "down": {
+      "body": "#222",
+      "border": "#222",
+      "wick": "#222",
+      "stroke": 1
+    }
   }
 }
