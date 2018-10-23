@@ -21,6 +21,10 @@ async function plot (symbol, interval, from, to)
 
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
   logger.log(candles);
+
+  const width = cfg.gutter.horizontal + candles.length * (cfg.candles.width + cfg.candles.margin);
+
+
 }
 
 const symbol = process.argv[2] || 'BTCUSDT';

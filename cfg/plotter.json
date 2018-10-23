@@ -5,6 +5,10 @@
   },
 
   "candles": {
+    "bg": "#ff9900",
+    "up": "#fff",
+    "black": "#000",
     "width": 4,
+    "margin": 2
   }
 }
