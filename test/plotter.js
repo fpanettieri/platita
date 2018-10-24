@@ -22,6 +22,8 @@ function parseBignums (candle)
 
 async function plot (output, symbol, interval, from, to)
 {
+  try {
+
   const from_t = (new Date(from)).getTime();
   const to_t = (new Date(to)).getTime();
   logger.info ('plotting', symbol, interval, from_t, to_t);
@@ -107,8 +109,12 @@ async function plot (output, symbol, interval, from, to)
 
   fs.writeFileSync(output, c.toBuffer());
   logger.log(`chart saved as ${output}`);
-
+  
+} catch (err) {
+  logger.error(err);
+} finally {
   process.exit();
+}
 }
 
 const output = process.argv[2] || '/tmp/plot.png'
@@ -117,29 +123,4 @@ const interval = process.argv[4] || '1d';
 const from = process.argv[5] || 0 ;
 const to = process.argv[6] || Date.now();
 
-try {
-  plot (output, symbol, interval, from, to);
-} catch (err) {
-  logger.error(err);
-}
-
-
-
-// const canvas = new Canvas(200, 200, "png");
-// const g = canvas.getContext('2d')
-//
-// // Write "Awesome!"
-// g.font = '30px Impact'
-// g.rotate(0.1)
-// g.fillText('Awesome!', 50, 100)
-//
-// // Draw line under text
-// var text = g.measureText('Awesome!')
-// g.strokeStyle = 'rgba(0,0,0,0.5)'
-// g.beginPath()
-// g.lineTo(50, 102)
-// g.lineTo(50 + text.width, 102)
-// g.stroke()
-//
-// const buf = canvas.toBuffer();
-// fs.writeFileSync("test.png", buf);
+plot (output, symbol, interval, from, to);
