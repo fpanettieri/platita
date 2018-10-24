@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require("fs");
-const Canvas = require("canvas");
+const canvas = require("canvas");
 
 const mongo  = require('../lib/mongo');
 const Logger = require('../lib/logger');
@@ -20,14 +20,27 @@ async function plot (symbol, interval, from, to)
   logger.log(`plotting Binance_${symbol}_${interval}`);
 
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
-  logger.log(candles);
 
+  // -- Setup canvas
   const img_size = {
     w: cfg.gutter.horizontal + candles.length * (cfg.candles.width + cfg.candles.margin),
     h: cfg.gutter.vertical + cfg.height
   }
+  const c = canvas.createCanvas(img_size.w, img_size.h);
+  const g = c.getContext('2d');
+  logger.log('canvas created');
 
-  const canvas = new Canvas(img_size.w, img_size.h, 'png');
+  // Render bg
+  g.fillStyle = cfg.bg;
+  g.fillRect(0, 0, img_size.w, img_size.h);
+
+  // TODO: Render grid
+  // TODO: Render candles
+  // TODO: Render render indicators
+  // TODO: Render positions
+
+  fs.writeFileSync('/tmp/test.png', c.toBuffer());
+  logger.log(`chart saved as test.png`);
 }
 
 const symbol = process.argv[2] || 'BTCUSDT';

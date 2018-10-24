@@ -1,14 +1,14 @@
 {
   "height": 400,
-  
+  "bg": "#fff2cc",
+
   "gutter": {
     "horizontal": 200,
     "vertical": 50
   },
 
-  "bg": "#fff2cc",
   "grid": {
-    "color": "#888",
+    "color": "#888"
   },
 
   "candles": {
