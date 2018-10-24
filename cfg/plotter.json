@@ -1,5 +1,5 @@
 {
-  "height": 400,
+  "height": 800,
   "bg": "#fff2cc",
 
   "gutter": {
@@ -10,13 +10,13 @@
   "grid": {
     "axis": "#000",
     "color": "#888",
-    "dash": [5, 15],
+    "dash": [2, 10],
     "step": 5
   },
 
   "candles": {
-    "width": 4,
-    "margin": 2,
+    "width": 8,
+    "margin": 4,
     "up": {
       "body": "#fff",
       "border": "#222",
