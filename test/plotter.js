@@ -1,13 +1,24 @@
 'use strict';
 
-const fs = require("fs");
-const canvas = require("canvas");
+const fs = require('fs');
+const canvas = require('canvas');
+const BigNumber = require('bignumber.js');
 
 const mongo  = require('../lib/mongo');
+const utils  = require('../lib/utils');
+
 const Logger = require('../lib/logger');
 const logger = new Logger(`[test/plotter]`);
 
 const cfg = require('../cfg/plotter.json');
+
+function parseBignums (candle)
+{
+  ['o','h','l','v','q','V','Q','B'].forEach(prop => {
+    candle[prop] = BigNumber(candle[prop]);
+  });
+  return candle;
+}
 
 async function plot (output, symbol, interval, from, to)
 {
@@ -19,7 +30,7 @@ async function plot (output, symbol, interval, from, to)
   const collection = db.collection(`Binance_${symbol}_${interval}`);
   logger.log(`plotting Binance_${symbol}_${interval}`);
 
-  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
+  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray().map(parseBignums);
 
   // -- Setup canvas
   const chart_size = {
@@ -65,7 +76,32 @@ async function plot (output, symbol, interval, from, to)
     logger.log('rendered vertical grid');
   }
 
-  // TODO: Render candles
+  { // Render candles
+    // Find range
+    logger.log('find range');
+
+    let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
+    for (let i = 0; i < candles.length; i++) {
+      let candle = candles[i];
+
+      if (candle.l > candle.o || candle.l > candle.c ) {
+        logger.error(candle);
+        throw `low ${candle.t}`;
+      }
+      if (candle.h < candle.o || candle.h < candle.c ) {
+        logger.error(candle);
+        throw `high ${candle.t}`;
+      }
+
+      // if (candle.l > candle.c) { throw 'up'; }
+      // if (candle.l > candle.o) { throw 'up'; }
+      // if (candle.l < range.min) { range.min = candle.l; }
+      // if (candle.h > range.max) { range.max = candle.h; }
+    }
+
+    logger.log(range);
+
+  }
   // TODO: Render render indicators
   // TODO: Render positions
 
@@ -81,7 +117,12 @@ const interval = process.argv[4] || '1d';
 const from = process.argv[5] || 0 ;
 const to = process.argv[6] || Date.now();
 
-plot (output, symbol, interval, from, to);
+try {
+  plot (output, symbol, interval, from, to);
+} catch (err) {
+  logger.error(err);
+}
+
 
 
 // const canvas = new Canvas(200, 200, "png");

@@ -34,6 +34,11 @@ Production process manager for Node.JS applications with a built-in load balance
 
 ## Canvas  
 https://www.npmjs.com/package/canvas
+node-canvas is a Cairo-backed Canvas implementation for Node.js
+
+## Bignumber.js  
+https://www.npmjs.com/package/bignumber.js
+A JavaScript library for arbitrary-precision decimal and non-decimal arithmetic
 
 ## MongoDB
 https://docs.mongodb.com/manual/installation/#supported-platforms
