@@ -8,7 +8,10 @@
   },
 
   "grid": {
-    "color": "#888"
+    "axis": "#000",
+    "color": "#888",
+    "dash": [5, 15],
+    "step": 5
   },
 
   "candles": {

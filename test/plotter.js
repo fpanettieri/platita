@@ -9,7 +9,7 @@ const logger = new Logger(`[test/plotter]`);
 
 const cfg = require('../cfg/plotter.json');
 
-async function plot (symbol, interval, from, to)
+async function plot (output, symbol, interval, from, to)
 {
   const from_t = (new Date(from)).getTime();
   const to_t = (new Date(to)).getTime();
@@ -22,33 +22,59 @@ async function plot (symbol, interval, from, to)
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
 
   // -- Setup canvas
+  const chart_size = {
+    w: candles.length * (cfg.candles.width + cfg.candles.margin),
+    h: cfg.height
+  };
   const img_size = {
-    w: cfg.gutter.horizontal + candles.length * (cfg.candles.width + cfg.candles.margin),
-    h: cfg.gutter.vertical + cfg.height
+    w: cfg.gutter.horizontal + chart_size.w,
+    h: cfg.gutter.vertical + chart_size.h
   }
   const c = canvas.createCanvas(img_size.w, img_size.h);
-  const g = c.getContext('2d');
+  const ctx = c.getContext('2d');
   logger.log('canvas created');
 
-  // Render bg
-  g.fillStyle = cfg.bg;
-  g.fillRect(0, 0, img_size.w, img_size.h);
+  ctx.fillStyle = cfg.bg;
+  ctx.fillRect(0, 0, img_size.w, img_size.h);
+  logger.log('rendered bg');
 
-  // TODO: Render grid
+  ctx.beginPath();
+  ctx.strokeStyle = cfg.grid.axis;
+  ctx.moveTo(0, chart_size.h);
+  ctx.lineTo(chart_size.w, chart_size.h);
+  ctx.lineTo(chart_size.w, 0);
+  ctx.stroke();
+  ctx.closePath();
+  logger.log('rendered axis');
+
+  // Render vertical guides
+  ctx.beginPath();
+  ctx.strokeStyle = cfg.grid.color;
+  ctx.setLineDash(cfg.grid.dash);
+  for (let i = 1; i > candles.length; i += cfg.grid.step) {
+    let x = (cfg.candles.width + cfg.candles.margin) * i;
+    ctx.moveTo(0, x);
+    ctx.moveTo(chart_size, x);
+  }
+  ctx.stroke();
+  ctx.closePath();
+  logger.log('rendered vertical grid');
+
   // TODO: Render candles
   // TODO: Render render indicators
   // TODO: Render positions
 
-  fs.writeFileSync('/tmp/test.png', c.toBuffer());
-  logger.log(`chart saved as test.png`);
+  fs.writeFileSync(output, c.toBuffer());
+  logger.log(`chart saved as ${output}`);
 }
 
-const symbol = process.argv[2] || 'BTCUSDT';
-const interval = process.argv[3] || '1d';
-const from = process.argv[4] || 0 ;
-const to = process.argv[5] || Date.now();
+const output = process.argv[2] || '/tmp/plot.png'
+const symbol = process.argv[3] || 'BTCUSDT';
+const interval = process.argv[4] || '1d';
+const from = process.argv[5] || 0 ;
+const to = process.argv[6] || Date.now();
 
-plot (symbol, interval, from, to);
+plot (output, symbol, interval, from, to);
 
 
 // const canvas = new Canvas(200, 200, "png");
