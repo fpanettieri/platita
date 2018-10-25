@@ -17,7 +17,6 @@ function parseBignums (candle)
   ['o','h','l','v','q','V','Q','B'].forEach(prop => {
     candle[prop] = BigNumber(candle[prop]);
   });
-  return candle;
 }
 
 async function plot (output, symbol, interval, from, to)
@@ -32,7 +31,8 @@ async function plot (output, symbol, interval, from, to)
   const collection = db.collection(`Binance_${symbol}_${interval}`);
   logger.log(`plotting Binance_${symbol}_${interval}`);
 
-  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray().map(parseBignums);
+  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
+  candles.forEach(parseBignums);
 
   // -- Setup canvas
   const chart_size = {
@@ -80,28 +80,16 @@ async function plot (output, symbol, interval, from, to)
 
   { // Render candles
     // Find range
-    logger.log('find range');
+    logger.log('finding range');
 
     let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
     for (let i = 0; i < candles.length; i++) {
       let candle = candles[i];
-
-      if (candle.l > candle.o || candle.l > candle.c ) {
-        logger.error(candle);
-        throw `low ${candle.t}`;
-      }
-      if (candle.h < candle.o || candle.h < candle.c ) {
-        logger.error(candle);
-        throw `high ${candle.t}`;
-      }
-
-      // if (candle.l > candle.c) { throw 'up'; }
-      // if (candle.l > candle.o) { throw 'up'; }
-      // if (candle.l < range.min) { range.min = candle.l; }
-      // if (candle.h > range.max) { range.max = candle.h; }
+      if (candle.l.lt(range.min)) { range.min = candle.l; }
+      if (candle.h.gt(range.max)) { range.max = candle.h; }
     }
 
-    logger.log(range);
+    logger.log(range.max.minus(range.min).toString());
 
   }
   // TODO: Render render indicators
@@ -109,7 +97,7 @@ async function plot (output, symbol, interval, from, to)
 
   fs.writeFileSync(output, c.toBuffer());
   logger.log(`chart saved as ${output}`);
-  
+
 } catch (err) {
   logger.error(err);
 } finally {
