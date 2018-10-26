@@ -86,13 +86,13 @@ async function plot (output, symbol, interval, from, to)
 
   { // Render candles
     let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
-    logger.log('finding range');
-
     for (let i = 0; i < candles.length; i++) {
       let candle = candles[i];
       if (candle.l.lt(range.min)) { range.min = candle.l; }
       if (candle.h.gt(range.max)) { range.max = candle.h; }
     }
+    logger.log(`trading range ${range.min}-${range.max}`);
+
   }
 
   // TODO: Render render indicators

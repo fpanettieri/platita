@@ -18,13 +18,13 @@
   "candles": {
     "width": 8,
     "margin": 4,
-    "up": {
+    "white": {
       "body": "#fff",
       "border": "#222",
       "wick": "#222",
       "stroke": 1
     },
-    "down": {
+    "black": {
       "body": "#222",
       "border": "#222",
       "wick": "#222",
