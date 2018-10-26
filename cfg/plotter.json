@@ -11,7 +11,8 @@
     "axis": "#000",
     "color": "#888",
     "dash": [2, 10],
-    "step": 5
+    "step": 5,
+    "intervals": 10
   },
 
   "candles": {

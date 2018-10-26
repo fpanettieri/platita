@@ -62,7 +62,7 @@ async function plot (output, symbol, interval, from, to)
   ctx.closePath();
   logger.log('rendered axis');
 
-  // Render vertical guides
+  // Render grid
   ctx.beginPath();
   ctx.strokeStyle = cfg.grid.color;
   ctx.setLineDash(cfg.grid.dash);
@@ -72,8 +72,15 @@ async function plot (output, symbol, interval, from, to)
     ctx.lineTo(x, chart_size.h);
     ctx.stroke();
   }
+  for (let i = 1; i < cfg.grid.intervals - 1; i++) {
+    let gap = Math.floor(chart_size.h / cfg.grid.intervals);
+    let y = gap * i;
+    ctx.moveTo(0, y);
+    ctx.lineTo(chart_size.w, y);
+    ctx.stroke();
+  }
   ctx.closePath();
-  logger.log('rendered vertical grid');
+  logger.log('rendered grid');
 
   // Find range
   let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
@@ -84,8 +91,6 @@ async function plot (output, symbol, interval, from, to)
     if (candle.l.lt(range.min)) { range.min = candle.l; }
     if (candle.h.gt(range.max)) { range.max = candle.h; }
   }
-
-  // Render horizontal guides
 
 
   // Render candles
