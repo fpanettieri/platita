@@ -47,53 +47,53 @@ async function plot (output, symbol, interval, from, to)
   const ctx = c.getContext('2d');
   logger.log('canvas created');
 
-  // Render background
-  ctx.fillStyle = cfg.bg;
-  ctx.fillRect(0, 0, img_size.w, img_size.h);
-  logger.log('rendered bg');
+  { // Render background
+    ctx.fillStyle = cfg.bg;
+    ctx.fillRect(0, 0, img_size.w, img_size.h);
+    logger.log('rendered bg');
+  }
 
-  // Render axis
-  ctx.beginPath();
-  ctx.strokeStyle = cfg.grid.axis;
-  ctx.moveTo(0, chart_size.h);
-  ctx.lineTo(chart_size.w, chart_size.h);
-  ctx.lineTo(chart_size.w, 0);
-  ctx.stroke();
-  ctx.closePath();
-  logger.log('rendered axis');
-
-  // Render grid
-  ctx.beginPath();
-  ctx.strokeStyle = cfg.grid.color;
-  ctx.setLineDash(cfg.grid.dash);
-  for (let i = 1; i < candles.length; i += cfg.grid.step) {
-    let x = (cfg.candles.width + cfg.candles.margin) * i;
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, chart_size.h);
+  { // Render axis
+    ctx.beginPath();
+    ctx.strokeStyle = cfg.grid.axis;
+    ctx.moveTo(0, chart_size.h);
+    ctx.lineTo(chart_size.w, chart_size.h);
+    ctx.lineTo(chart_size.w, 0);
     ctx.stroke();
-  }
-  for (let i = 1; i < cfg.grid.intervals - 1; i++) {
-    let gap = Math.floor(chart_size.h / cfg.grid.intervals);
-    let y = gap * i;
-    ctx.moveTo(0, y);
-    ctx.lineTo(chart_size.w, y);
-    ctx.stroke();
-  }
-  ctx.closePath();
-  logger.log('rendered grid');
-
-  // Find range
-  let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
-  logger.log('finding range');
-
-  for (let i = 0; i < candles.length; i++) {
-    let candle = candles[i];
-    if (candle.l.lt(range.min)) { range.min = candle.l; }
-    if (candle.h.gt(range.max)) { range.max = candle.h; }
+    ctx.closePath();
+    logger.log('rendered axis');
   }
 
+  { // Render grid
+    ctx.beginPath();
+    ctx.strokeStyle = cfg.grid.color;
+    ctx.setLineDash(cfg.grid.dash);
+    for (let i = 1; i < candles.length; i += cfg.grid.step) {
+      let x = (cfg.candles.width + cfg.candles.margin) * i;
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, chart_size.h);
+      ctx.stroke();
+    }
+    for (let i = 1; i < cfg.grid.intervals - 1; i++) {
+      let gap = Math.floor(chart_size.h / cfg.grid.intervals);
+      ctx.moveTo(0, gap * i);
+      ctx.lineTo(chart_size.w, y);
+      ctx.stroke();
+    }
+    ctx.closePath();
+    logger.log('rendered grid');
+  }
 
-  // Render candles
+  { // Render candles
+    let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
+    logger.log('finding range');
+
+    for (let i = 0; i < candles.length; i++) {
+      let candle = candles[i];
+      if (candle.l.lt(range.min)) { range.min = candle.l; }
+      if (candle.h.gt(range.max)) { range.max = candle.h; }
+    }
+  }
 
   // TODO: Render render indicators
   // TODO: Render positions
