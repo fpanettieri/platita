@@ -74,10 +74,10 @@ async function plot (output, symbol, interval, from, to)
       ctx.lineTo(x, chart_size.h);
       ctx.stroke();
     }
-    for (let i = 1; i < cfg.grid.intervals - 1; i++) {
+    for (let i = 1; i < cfg.grid.intervals; i++) {
       let gap = Math.floor(chart_size.h / cfg.grid.intervals);
       ctx.moveTo(0, gap * i);
-      ctx.lineTo(chart_size.w, y);
+      ctx.lineTo(chart_size.w, gap * i);
       ctx.stroke();
     }
     ctx.closePath();
