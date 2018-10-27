@@ -19,6 +19,21 @@ function parseBignums (candle)
   });
 }
 
+function project (candle, idx, range, cfg)
+{
+  let p = {};
+  let scale = cfg.h / range.value;
+
+  ['o','h','l','c'].forEach(prop => {
+    p[prop] = {
+      x: Math.floor(idx * (cfg.candles.width + cfg.candles.margin)),
+      y: cfg.height - (candle[prop] - range.min) * scale
+    }
+  });
+
+  return p;
+}
+
 async function plot (output, symbol, interval, from, to)
 {
   try {
@@ -69,13 +84,13 @@ async function plot (output, symbol, interval, from, to)
     ctx.strokeStyle = cfg.grid.color;
     ctx.setLineDash(cfg.grid.dash);
     for (let i = 1; i < candles.length; i += cfg.grid.step) {
-      let x = (cfg.candles.width + cfg.candles.margin) * i;
+      const x = (cfg.candles.width + cfg.candles.margin) * i;
       ctx.moveTo(x, 0);
       ctx.lineTo(x, chart_size.h);
       ctx.stroke();
     }
     for (let i = 1; i < cfg.grid.intervals; i++) {
-      let gap = Math.floor(chart_size.h / cfg.grid.intervals);
+      const gap = Math.floor(chart_size.h / cfg.grid.intervals);
       ctx.moveTo(0, gap * i);
       ctx.lineTo(chart_size.w, gap * i);
       ctx.stroke();
@@ -91,8 +106,33 @@ async function plot (output, symbol, interval, from, to)
       if (candle.l.lt(range.min)) { range.min = candle.l; }
       if (candle.h.gt(range.max)) { range.max = candle.h; }
     }
-    logger.log(`trading range ${range.min}-${range.max}`);
+    range.value = range.max - range.min;
+    logger.log(`trading range ${range.min} / ${range.max} (${range.value})`);
 
+    for (let i = 0; i < candles.length; i++) {
+      const candle = candles[i];
+      const style = candle.c >= candle.o ? cfg.candles.white : cfg.candles.black;
+
+      // project
+      const proj = project(candle, i, range, cfg);
+
+      // wick
+      ctx.beginPath();
+      ctx.strokeStyle = style.wick;
+      ctx.moveTo(proj.l.x, proj.l.y);
+      ctx.lineTo(proj.h.x, proj.h.y);
+      ctx.stroke();
+
+      // body
+      const bottom = candle.o < candle.c ? proj.o : proj.c;
+      const half_w = cfg.candles.width / 2;
+      const height = Math.abs(proj.c.y - proj.o.y);
+      ctx.fillStyle = style.body;
+      ctx.strokeStyle = style.border;
+      ctx.rect(bottom.x - half_w, bottom.y, cfg.candles.width, height);
+      ctx.fill();
+      ctx.stroke();
+    }
   }
 
   // TODO: Render render indicators
