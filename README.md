@@ -25,6 +25,12 @@ Each service can be instanced N times. They are independent, discoverable and di
 ## Archivist
 Download the full history of a trading pair
 
+# Usage
+
+## Plotter  
+Used to check local data
+node test/plotter.js /tmp/plot.png POEBTC 15m 2018-10-25
+
 # Dependencies
 Required for running the engine
 
