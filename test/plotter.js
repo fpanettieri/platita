@@ -22,12 +22,12 @@ function parseBignums (candle)
 function project (candle, idx, range, cfg)
 {
   let p = {};
-  let scale = cfg.h / range.value;
+  let scale = cfg.height / range.value;
 
   ['o','h','l','c'].forEach(prop => {
     p[prop] = {
-      x: Math.floor(idx * (cfg.candles.width + cfg.candles.margin)),
-      y: cfg.height - (candle[prop] - range.min) * scale
+      x: Math.floor((idx + 1) * (cfg.candles.width + cfg.candles.margin)),
+      y: Math.floor(cfg.height - (candle[prop] - range.min) * scale)
     }
   });
 
@@ -118,20 +118,22 @@ async function plot (output, symbol, interval, from, to)
 
       // wick
       ctx.beginPath();
+      ctx.setLineDash([]);
       ctx.strokeStyle = style.wick;
       ctx.moveTo(proj.l.x, proj.l.y);
       ctx.lineTo(proj.h.x, proj.h.y);
       ctx.stroke();
+      ctx.closePath();
 
       // body
-      const bottom = candle.o < candle.c ? proj.o : proj.c;
+      const top = candle.o > candle.c ? proj.o : proj.c;
       const half_w = cfg.candles.width / 2;
       const height = Math.abs(proj.c.y - proj.o.y);
       ctx.fillStyle = style.body;
       ctx.strokeStyle = style.border;
-      ctx.rect(bottom.x - half_w, bottom.y, cfg.candles.width, height);
-      ctx.fill();
+      ctx.rect(top.x - half_w, top.y, cfg.candles.width, height);
       ctx.stroke();
+      ctx.fill();
     }
   }
 
