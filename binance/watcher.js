@@ -10,7 +10,7 @@ let ms = null;
 function dispatchMsg (msg, socket)
 {
   switch (msg.e) {
-    case "WatchSymbols": {
+    case 'WatchSymbols': {
       watchSymbols(msg.s, msg.i, socket);
     } break;
   }

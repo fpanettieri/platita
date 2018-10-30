@@ -13,15 +13,15 @@ const indicators = [];
 function dispatchMsg (msg, socket)
 {
   switch (msg.e) {
-    case "AddIndicator": {
+    case 'AddIndicator': {
       addIndicator(msg, socket);
     } break;
 
-    case "ListIndicators": {
+    case 'ListIndicators': {
       listIndicators(socket);
     } break;
 
-    case "RemoveIndicator": {
+    case 'RemoveIndicator': {
       removeIndicator(msg[1], socket);
     } break;
   }
@@ -29,7 +29,17 @@ function dispatchMsg (msg, socket)
 
 function addIndicator (msg, socket)
 {
-  indicators.push()
+  for (let i = 0; i < indicators.length; i++) {
+    const ind = indicators[i];
+    if (ind.indicator == msg.indicator && ind.cfg == msg.cfg) {
+      console.log('repeated!', ind);
+    } else {
+      console.log('unique!', ind);
+    }
+  }
+  indicators.push({indicator: msg.indicator, cfg: msg.cfg});
+  
+  //indicators.push({indicator: msg.indicator, cfg: msg.cfg, fn: require(`../indicators/${msg.indicator}`)});
 }
 
 // -- Initialization

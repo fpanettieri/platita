@@ -12,11 +12,11 @@ let ms = null;
 function dispatchMsg (msg, socket)
 {
   switch (msg.e) {
-    case "DownloadMetadata": {
+    case 'DownloadMetadata': {
       downloadMetadata(msg.s, msg.i, socket);
     } break;
 
-    case "DownloadHistory": {
+    case 'DownloadHistory': {
       downloadHistory(msg.s, msg.i, msg.from || 0, msg.to || Date.now(), socket);
     } break;
   }

@@ -37,9 +37,9 @@ function runTest (test)
     case '4': { socket.send({e: 'WatchSymbols', s: symbol, i: interval}) } break;
 
     // Analyst
-    case '5': { socket.send({e: 'AddIndicator', indicator: 'SMA', period: 20}) } break;
+    case '5': { socket.send({e: 'AddIndicator', indicator: 'sma', cfg: {period: 20}}) } break;
     case '6': { socket.send({e: 'ListIndicators'}) } break;
-    case '7': { socket.send({e: 'RemoveIndicator', indicator: 'SMA', period: 20}) } break;
+    case '7': { socket.send({e: 'RemoveIndicator', index: 0}) } break;
     default: { logger.error ('Unknown test', test); }
   }
 
