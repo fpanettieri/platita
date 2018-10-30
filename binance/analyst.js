@@ -12,7 +12,7 @@ const indicators = [];
 
 function dispatchMsg (msg, socket)
 {
-  switch (msg[0]) {
+  switch (msg.e) {
     case "AddIndicator": {
       addIndicator(msg, socket);
     } break;
