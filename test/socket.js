@@ -15,7 +15,7 @@ let symbol = process.argv[4] || 'BTCUSDT';
 let interval = process.argv[5] || '15m';
 
 let socket = net.createConnection(port, host);
-socket.on('data', (data) => logger.log('data received', data.toString('utf8')));
+socket.on('data', (data) => logger.log(data.toString('utf8')));
 socket.on('error', (err) => logger.error('socket error', err));
 socket.on('close', () => logger.log('connection closed'));
 socket.send = function(json) {
