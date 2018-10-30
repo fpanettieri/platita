@@ -9,9 +9,9 @@ let ms = null;
 
 function dispatchMsg (msg, socket)
 {
-  switch (msg[0]) {
+  switch (msg.e) {
     case "WatchSymbols": {
-      watchSymbols(msg[1], msg[2], socket);
+      watchSymbols(msg.s, msg.i, socket);
     } break;
   }
 }
