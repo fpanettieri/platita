@@ -11,6 +11,7 @@ let ms = null;
 
 function dispatchMsg (msg, socket)
 {
+  ms.logger.log(msg);
   switch (msg[0]) {
     case "DownloadMetadata": {
       downloadMetadata(msg[1], msg[2], socket);
