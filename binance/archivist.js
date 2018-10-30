@@ -11,18 +11,13 @@ let ms = null;
 
 function dispatchMsg (msg, socket)
 {
-  ms.logger.log(msg);
-  switch (msg[0]) {
+  switch (msg.e) {
     case "DownloadMetadata": {
-      downloadMetadata(msg[1], msg[2], socket);
+      downloadMetadata(msg.s, msg.i, socket);
     } break;
 
-    case "DownloadFullHistory": {
-      downloadHistory(msg[1], msg[2], 0, Date.now(), socket);
-    } break;
-
-    case "DownloadPartialHistory": {
-      downloadHistory(msg[1], msg[2], msg[3], msg[4], socket);
+    case "DownloadHistory": {
+      downloadHistory(msg.s, msg.i, msg.from || 0, msg.to || Date.now(), socket);
     } break;
   }
 }
