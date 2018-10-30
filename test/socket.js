@@ -23,10 +23,13 @@ function runTest (test)
 {
   switch (test.trim()) {
     case '0': { running = false; } break;
-    case '1': { socket.write(`<DownloadMetadata ${symbol} ${interval}>`) } break;
-    case '2': { socket.write(`<DownloadFullHistory ${symbol} ${interval}>`) } break;
-    case '3': { socket.write(`<DownloadPartialHistory ${symbol} ${interval} 2018-10-01>`) } break;
-    case '4': { socket.write(`<WatchSymbols ${symbol} ${interval}>`) } break;
+    case '1': { socket.write(`{e: 'DownloadMetadata', s: '${symbol}', i: '${interval}', t:${Date.now()}}`) } break;
+    case '2': { socket.write(`{e: 'DownloadHistory', s: '${symbol}', i: '${interval}', t:${Date.now()}}`) } break;
+    case '3': { socket.write(`{e: 'DownloadHistory', s: '${symbol}', i: '${interval}', from: '2018-10-01', t:${Date.now()}}`) } break;
+    case '4': { socket.write(`{e: 'WatchSymbols', s: '${symbol}', i: '${interval}', t:${Date.now()}}`) } break;
+    case '5': { socket.write(`{e: 'AddIndicator', indicator: 'SMA', period: '20', t:${Date.now()}}`) } break;
+    case '6': { socket.write(`{e: 'ListIndicators', t:${Date.now()}}`) } break;
+    case '7': { socket.write(`{e: 'RemoveIndicator', indicator: 'SMA', period: '20', t:${Date.now()}}`) } break;
     default: { logger.error ('Unknown test', test); }
   }
 
@@ -36,8 +39,8 @@ function runTest (test)
 // -- Init
 const prompt = `
  1. DownloadMetadata ${symbol} ${interval}
- 2. DownloadFullHistory ${symbol} ${interval}
- 3. DownloadPartialHistory ${symbol} ${interval} 2018-10-01
+ 2. DownloadHistory ${symbol} ${interval}
+ 3. DownloadHistory ${symbol} ${interval} 2018-10-01
  4. WatchSymbols ${symbol} ${interval}
  5. AddIndicator SMA 20
  6. ListIndicators

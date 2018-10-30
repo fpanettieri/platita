@@ -29,7 +29,7 @@ function dispatchMsg (msg, socket)
 
 function addIndicator (msg, socket)
 {
-  
+
 }
 
 // -- Initialization
