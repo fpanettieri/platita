@@ -29,7 +29,7 @@ async function downloadMetadata (symbol, interval, socket)
 
   try {
     const cached = await collection.findOne({'id': id});
-    if (cached) { socket.write(`<MetadataDownloaded ${symbol} ${interval} ${cached.first} ${cached.step}>`); return; }
+    if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: cached.first, step: cached.step}); return; }
     ms.logger.info(`${id} metadata not found`);
 
     const options = { limit: 2, startTime: 0 };
@@ -40,10 +40,10 @@ async function downloadMetadata (symbol, interval, socket)
     const result = await collection.insertOne(meta);
     ms.logger.info(`${id} metadata stored`);
 
-    socket.write(`<MetadataDownloaded ${symbol} ${interval} ${meta.first} ${meta.step}>`);
+    socket.send({e: 'MetadataDownloaded', s:symbol, i:interval, first: meta.first, step: meta.step});
   } catch (err) {
     ms.logger.error(`DownloadMetadataFailed`);
-    socket.write(`<DownloadMetadataFailed ${symbol} ${interval}>`);
+    socket.send({e: 'DownloadMetadataFailed', s:symbol, i:interval});
   }
 }
 
@@ -74,14 +74,14 @@ async function downloadHistory (symbol, interval, from, to, socket)
 
       let ticks_objs = ticks.map((k) => binance.candleToObj(k));
       await collection.insertMany(ticks_objs);
-      socket.write(`<HistoryPartiallyDownloaded ${symbol} ${interval} ${i + 1} ${fetches}>`);
+      socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
     }
 
     ms.logger.info(`${id} history updated`);
-    socket.write(`<HistoryDownloaded ${symbol} ${interval} ${from_t} ${to_t}>`);
+    socket.send({e: 'HistoryDownloaded' s: symbol, i: interval, from: from_t, to: to_t});
   } catch (err) {
-    ms.logger.error(`DownloadHistoryFailed`);
-    socket.write(`<DownloadHistoryFailed ${symbol} ${interval} ${from_t} ${to_t}>`);
+    ms.logger.error('DownloadHistoryFailed');
+    socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from_t, to: to_t});
   }
 }
 

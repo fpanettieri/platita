@@ -25,7 +25,7 @@ function watchSymbols (symbols, interval, socket)
     Binance.websockets.candlesticks(symbols_arr, interval, (candlestick) => {
       const c = candlestick.k;
       const e = c.x ? 'CandleClosed' : 'CandleUpdated';
-      socket.write(`<${e} ${c.s} ${c.i} ${c.t} ${c.o} ${c.h} ${c.l} ${c.c} ${c.v} ${c.T} ${c.q} ${c.n} ${c.V} ${c.Q}>`);
+      socket.send({e: e, candle: candlestick.k});
 
       // Store closed candles
       if (!c.x) { return }
