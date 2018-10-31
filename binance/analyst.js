@@ -1,7 +1,6 @@
 'use strict';
 
 const microservice = require('../core/microservice');
-const indicators = require('../core/indicators');
 const binance = require('../lib/binance');
 
 // -- Holders
@@ -29,17 +28,19 @@ function dispatchMsg (msg, socket)
 
 function addIndicator (msg, socket)
 {
+  ms.logger.log('pre', indicators);
   for (let i = 0; i < indicators.length; i++) {
     const ind = indicators[i];
-    if (ind.indicator == msg.indicator && ind.cfg == msg.cfg) {
+    console.log(ind.indicator === msg.indicator, JSON.stringify(ind.cfg) === JSON.stringify(msg.cfg));
+
+    if (ind.indicator === msg.indicator && JSON.stringify(ind.cfg) === JSON.stringify(msg.cfg)) {
       console.log('repeated!', ind);
     } else {
       console.log('unique!', ind);
     }
   }
-  indicators.push({indicator: msg.indicator, cfg: msg.cfg});
-  
-  //indicators.push({indicator: msg.indicator, cfg: msg.cfg, fn: require(`../indicators/${msg.indicator}`)});
+  indicators.push({indicator: msg.indicator, cfg: msg.cfg, fn: require(`../indicators/${msg.indicator}`)});
+  ms.logger.log('post', indicators);
 }
 
 // -- Initialization
