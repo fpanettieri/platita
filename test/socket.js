@@ -39,7 +39,7 @@ function runTest (test)
     // Analyst
     case '5': { socket.send({e: 'AddIndicator', indicator: 'sma', cfg: {period: 20}}) } break;
     case '6': { socket.send({e: 'ListIndicators'}) } break;
-    case '7': { socket.send({e: 'RemoveIndicator', index: 0}) } break;
+    case '7': { socket.send({e: 'RemoveIndicator', indicator: 'sma', cfg: {period: 20}}) } break;
     default: { logger.error ('Unknown test', test); }
   }
 
@@ -52,9 +52,9 @@ const prompt = `
  2. DownloadHistory ${symbol} ${interval}
  3. DownloadHistory ${symbol} ${interval} 2018-10-01
  4. WatchSymbols ${symbol} ${interval}
- 5. AddIndicator SMA 20
+ 5. AddIndicator sma 20
  6. ListIndicators
- 7. RemoveIndicator 0
+ 7. RemoveIndicator sma 20
  8. AnalyzeCandle ${symbol} ${interval} ....
  9. AnalyzeLastCandle ${symbol} ${interval}
 > `;

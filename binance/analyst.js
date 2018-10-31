@@ -7,13 +7,15 @@ const binance = require('../lib/binance');
 let Binance = null;
 let ms = null;
 
+// -- Internal state
+let period = 1;
 const indicators = [];
 
 function dispatchMsg (msg, socket)
 {
   switch (msg.e) {
     case 'AddIndicator': {
-      addIndicator(msg, socket);
+      addIndicator(msg.indicator, msg.cfg, socket);
     } break;
 
     case 'ListIndicators': {
@@ -21,26 +23,46 @@ function dispatchMsg (msg, socket)
     } break;
 
     case 'RemoveIndicator': {
-      removeIndicator(msg[1], socket);
+      removeIndicator(msg.indicator, msg.cfg, socket);
     } break;
   }
 }
 
-function addIndicator (msg, socket)
+function indexOf (indicator, cfg)
 {
-  ms.logger.log('pre', indicators);
+  const cfg_str = JSON.stringify(cfg);
   for (let i = 0; i < indicators.length; i++) {
     const ind = indicators[i];
-    console.log(ind.indicator === msg.indicator, JSON.stringify(ind.cfg) === JSON.stringify(msg.cfg));
-
-    if (ind.indicator === msg.indicator && JSON.stringify(ind.cfg) === JSON.stringify(msg.cfg)) {
-      console.log('repeated!', ind);
-    } else {
-      console.log('unique!', ind);
-    }
+    if (ind.indicator === indicator && JSON.stringify(ind.cfg) === cfg_str) { return i; }
   }
-  indicators.push({indicator: msg.indicator, cfg: msg.cfg, fn: require(`../indicators/${msg.indicator}`)});
-  ms.logger.log('post', indicators);
+  return -1;
+}
+
+function addIndicator (indicator, cfg, socket)
+{
+  let e = 'DuplicatedIndicator';
+  let idx = indexOf(indicator, cfg);
+  if (idx == -1) {
+    e = 'IndicatorAdded';
+    indicators.push({indicator: indicator, cfg: cfg, fn: require(`../indicators/${indicator}`)});
+  }
+  socket.send({e: e, indicator: indicator, cfg: cfg});
+}
+
+function listIndicators (socket)
+{
+  socket.send({e: 'ListedIndicators', indicators: indicators});
+}
+
+function removeIndicator (socket)
+{
+  let e = 'IndicatorNotFound';
+  let idx = indexOf(indicator, cfg);
+  if (idx > -1) {
+    e = 'IndicatorRemoved';
+    indicators.splice(idx, 1);  
+  }
+  socket.send({e: e, indicator: indicator, cfg: cfg});
 }
 
 // -- Initialization
