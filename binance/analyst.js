@@ -54,13 +54,13 @@ function listIndicators (socket)
   socket.send({e: 'ListedIndicators', indicators: indicators});
 }
 
-function removeIndicator (socket)
+function removeIndicator (indicator, cfg, socket)
 {
   let e = 'IndicatorNotFound';
   let idx = indexOf(indicator, cfg);
   if (idx > -1) {
     e = 'IndicatorRemoved';
-    indicators.splice(idx, 1);  
+    indicators.splice(idx, 1);
   }
   socket.send({e: e, indicator: indicator, cfg: cfg});
 }
