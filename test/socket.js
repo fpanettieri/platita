@@ -42,7 +42,7 @@ function runTest (test)
     case '7':  { socket.send({e: 'RemoveIndicator', indicator: 'sma', cfg: {period: 20, name: 'sma_20', persist: true}}) } break;
     case '8':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
     case '9':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval, t: "2018-10-01"}) } break;
-    case '10': { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval, candle: {o: 7, h: 10, l: 3, c: 5, t: "2018-10-01"}}) } break;
+    case '10': { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval, candle: {o: "4307.17000000", h: "4336.69000000", l: "4265.87000000", c: "4290.17000000", v: "19.03239500", t: 1502986500000.0}}) } break;
 
     default: { logger.error ('Unknown test', test); }
   }
