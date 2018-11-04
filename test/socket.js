@@ -29,17 +29,21 @@ function runTest (test)
     case '0': { running = false; } break;
 
     // Archivist
-    case '1': { socket.send({e: 'DownloadMetadata', s: symbol, i: interval}) } break;
-    case '2': { socket.send({e: 'DownloadHistory', s: symbol, i: interval}) } break;
-    case '3': { socket.send({e: 'DownloadHistory', s: symbol, i: interval, from: '2018-10-01'}) } break;
+    case '1':  { socket.send({e: 'DownloadMetadata', s: symbol, i: interval}) } break;
+    case '2':  { socket.send({e: 'DownloadHistory', s: symbol, i: interval}) } break;
+    case '3':  { socket.send({e: 'DownloadHistory', s: symbol, i: interval, from: '2018-10-01'}) } break;
 
     // Watcher
-    case '4': { socket.send({e: 'WatchSymbols', s: symbol, i: interval}) } break;
+    case '4':  { socket.send({e: 'WatchSymbols', s: symbol, i: interval}) } break;
 
     // Analyst
-    case '5': { socket.send({e: 'AddIndicator', indicator: 'sma', cfg: {period: 20}}) } break;
-    case '6': { socket.send({e: 'ListIndicators'}) } break;
-    case '7': { socket.send({e: 'RemoveIndicator', indicator: 'sma', cfg: {period: 20}}) } break;
+    case '5':  { socket.send({e: 'AddIndicator', indicator: 'sma', cfg: {period: 20, name: 'sma_20', persist: true}}) } break;
+    case '6':  { socket.send({e: 'ListIndicators'}) } break;
+    case '7':  { socket.send({e: 'RemoveIndicator', indicator: 'sma', cfg: {period: 20, name: 'sma_20', persist: true}}) } break;
+    case '8':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
+    case '9':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
+    case '10': { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
+
     default: { logger.error ('Unknown test', test); }
   }
 
@@ -55,8 +59,7 @@ const prompt = `
  5. AddIndicator sma 20
  6. ListIndicators
  7. RemoveIndicator sma 20
- 8. AnalyzeCandle ${symbol} ${interval} ....
- 9. AnalyzeLastCandle ${symbol} ${interval}
+ 8. AnalyzeCandle ${symbol} ${interval}
 > `;
 
 const rl = readline.createInterface({

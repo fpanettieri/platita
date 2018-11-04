@@ -46,6 +46,8 @@ function addIndicator (indicator, cfg, socket)
     e = 'IndicatorAdded';
     indicators.push({indicator: indicator, cfg: cfg, fn: require(`../indicators/${indicator}`)});
   }
+  if (cfg.period && cfg.period > period) { period = cfg.period; }
+  
   socket.send({e: e, indicator: indicator, cfg: cfg});
 }
 
