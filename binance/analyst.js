@@ -69,7 +69,15 @@ function removeIndicator (indicator, cfg, socket)
 
 function analyzeCandle ()
 {
-  
+  // check if the candle param is sent
+  // find the last timestamp
+  // fetch the last PERIOD candles
+  // reorder them
+  // for each indicator
+  //   analyze the candles
+  //   if indicator.persist?
+  //     persist
+  // broadcast TA result
 }
 
 // -- Initialization

@@ -52,14 +52,16 @@ function runTest (test)
 
 // -- Init
 const prompt = `
- 1. DownloadMetadata ${symbol} ${interval}
- 2. DownloadHistory ${symbol} ${interval}
- 3. DownloadHistory ${symbol} ${interval} 2018-10-01
- 4. WatchSymbols ${symbol} ${interval}
- 5. AddIndicator sma 20
- 6. ListIndicators
- 7. RemoveIndicator sma 20
- 8. AnalyzeCandle ${symbol} ${interval}
+ 1.  DownloadMetadata ${symbol} ${interval}
+ 2.  DownloadHistory ${symbol} ${interval}
+ 3.  DownloadHistory ${symbol} ${interval} 2018-10-01
+ 4.  WatchSymbols ${symbol} ${interval}
+ 5.  AddIndicator sma 20
+ 6.  ListIndicators
+ 7.  RemoveIndicator sma 20
+ 8.  AnalyzeCandle ${symbol} ${interval} (last)
+ 9.  AnalyzeCandle ${symbol} ${interval} 2018-10-01
+ 10  AnalyzeCandle ${symbol} ${interval} {candle}
 > `;
 
 const rl = readline.createInterface({
