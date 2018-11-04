@@ -47,7 +47,7 @@ function addIndicator (indicator, cfg, socket)
     indicators.push({indicator: indicator, cfg: cfg, fn: require(`../indicators/${indicator}`)});
   }
   if (cfg.period && cfg.period > period) { period = cfg.period; }
-  
+
   socket.send({e: e, indicator: indicator, cfg: cfg});
 }
 
@@ -65,6 +65,11 @@ function removeIndicator (indicator, cfg, socket)
     indicators.splice(idx, 1);
   }
   socket.send({e: e, indicator: indicator, cfg: cfg});
+}
+
+function analyzeCandle ()
+{
+  
 }
 
 // -- Initialization

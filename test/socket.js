@@ -41,8 +41,8 @@ function runTest (test)
     case '6':  { socket.send({e: 'ListIndicators'}) } break;
     case '7':  { socket.send({e: 'RemoveIndicator', indicator: 'sma', cfg: {period: 20, name: 'sma_20', persist: true}}) } break;
     case '8':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
-    case '9':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
-    case '10': { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval}) } break;
+    case '9':  { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval, t: "2018-10-01"}) } break;
+    case '10': { socket.send({e: 'AnalyzeCandle', s: symbol, i: interval, candle: {o: 7, h: 10, l: 3, c: 5, t: "2018-10-01"}}) } break;
 
     default: { logger.error ('Unknown test', test); }
   }
