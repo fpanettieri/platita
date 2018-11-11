@@ -1,0 +1,10 @@
+This is a metadata analysis
+
+
+How how much erosion they coin has
+
+trade_fee_idx = candle volatility (log) / tx fee
+(how many pips it moves daily / entry pay)
+e.g.: 20 / 2 = 10
+
+When trading, include fee in calc

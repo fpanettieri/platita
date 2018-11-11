@@ -42,7 +42,7 @@ async function downloadMetadata (symbol, interval, socket)
 
     socket.send({e: 'MetadataDownloaded', s:symbol, i:interval, first: meta.first, step: meta.step});
   } catch (err) {
-    ms.logger.error(`DownloadMetadataFailed`);
+    ms.logger.error('DownloadMetadataFailed');
     socket.send({e: 'DownloadMetadataFailed', s:symbol, i:interval});
   }
 }

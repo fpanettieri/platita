@@ -2,6 +2,7 @@
 
 const microservice = require('../core/microservice');
 const binance = require('../lib/binance');
+const utils = require('../lib/utils');
 
 // -- Holders
 let Binance = null;
@@ -10,6 +11,26 @@ let ms = null;
 // -- Internal state
 let period = 1;
 const indicators = [];
+
+function intervalToMs (interval)
+{
+  const dimension = interval[interval.length - 1];
+  let ms = parseInt(interval.slice(0, -1)) * 1000;
+
+  if (dimension === 'M') {
+    ms *= 30;
+  } else if (dimension === 'w') {
+    ms *= 7;
+  }
+
+  switch (dimension) {
+    case 'd': ms *= 24;
+    case 'h': ms *= 60;
+    case 'm': ms *= 60;
+  }
+
+  return ms;
+}
 
 function dispatchMsg (msg, socket)
 {
@@ -24,6 +45,10 @@ function dispatchMsg (msg, socket)
 
     case 'RemoveIndicator': {
       removeIndicator(msg.indicator, msg.cfg, socket);
+    } break;
+
+    case 'AnalyzeCandle': {
+      analyzeCandle(msg.s, msg.i, msg.t, msg.c, socket);
     } break;
   }
 }
@@ -67,17 +92,45 @@ function removeIndicator (indicator, cfg, socket)
   socket.send({e: e, indicator: indicator, cfg: cfg});
 }
 
-function analyzeCandle ()
+async function analyzeCandle (symbol, interval, timestamp, candle, socket)
 {
-  // check if the candle param is sent
-  // find the last timestamp
-  // fetch the last PERIOD candles
-  // reorder them
-  // for each indicator
-  //   analyze the candles
-  //   if indicator.persist?
-  //     persist
-  // broadcast TA result
+  console.log('[analyzeCandle]', symbol, interval, timestamp, candle);
+  try {
+    const step = intervalToMs(interval);
+
+    if (candle && candle.t) {
+      timestamp = candle.t;
+    } else if (!timestamp) {
+      timestamp = Math.trunc(Date.now() / step) * step;
+    }
+
+    const to = (new Date(timestamp)).getTime();
+    const from = to - step * period;
+
+    console.log(`Binance_${symbol}_${interval}`);
+    const collection = ms.db.collection(`Binance_${symbol}_${interval}`);
+    const history = await collection.find({t: {$lte: from, $gte: to}}).toArray();
+    console.dir(history);
+
+    // use calculated step to
+    // calculate the exact begin and end params
+    // perfect fetch
+    //
+    // await try to fetch the latest PERIOD of candles
+    // if !candle
+    //   candle = last candle
+    //
+    // for indicator in indicators
+    //   const val = indicator.fn(candle, period);
+    //   if indicator.persist?
+    //     persist
+    // broadcast TA result
+
+  } catch (err) {
+    console.error(err);
+    ms.logger.error('AnalyzeCandleFailed');
+    socket.send({e: 'AnalyzeCandleFailed', s:symbol, i:interval});
+  }
 }
 
 // -- Initialization
