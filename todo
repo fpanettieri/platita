@@ -1,7 +1,6 @@
 =====================
   Todo
 =====================
-Handle reconections on the test script, so I can restart each module without having to restart the test module
 // - Analyst: After each candle arrives
 
 -- Strategy algorithm --
@@ -74,3 +73,4 @@ Handle reconections on the test script, so I can restart each module without hav
 - Broadcast every update
 - If the update is final, try to insert it into the db
 - If the symbol is not initialized, throw an error at the begining of the watch method
+- Handle reconnections on the test script, so I can restart each module without having to restart the test module
