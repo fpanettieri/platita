@@ -9,7 +9,7 @@ let Binance = null;
 let ms = null;
 
 // -- Internal state
-let period = 1;
+let period = 3;
 const indicators = [];
 
 function intervalToMs (interval)
@@ -105,7 +105,7 @@ async function analyzeCandle (symbol, interval, timestamp, candle, socket)
     }
 
     const to = (new Date(timestamp)).getTime();
-    const from = to - step * period;
+    const from = to - step * period + 1;
     console.log(`period: ${period}, from: ${from}, to: ${to}`);
 
     console.log(`Binance_${symbol}_${interval}`);
