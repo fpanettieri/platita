@@ -23,6 +23,7 @@ function connect () {
     socket.write(JSON.stringify(json));
   };
 
+  socket.on('connect', () => logger.info('connection successfully established'));
   socket.on('error', (err) => logger.error('connection lost, retrying in 5 secs'));
   socket.on('close', () => setTimeout(connect, 5000));
 }
