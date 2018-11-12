@@ -1,6 +1,7 @@
 =====================
   Todo
 =====================
+Handle reconections on the test script, so I can restart each module without having to restart the test module
 // - Analyst: After each candle arrives
 
 -- Strategy algorithm --

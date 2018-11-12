@@ -14,14 +14,18 @@ let host = process.argv[3] || '0.0.0.0';
 let symbol = process.argv[4] || 'BTCUSDT';
 let interval = process.argv[5] || '15m';
 
-let socket = net.createConnection(port, host);
-socket.on('data', (data) => logger.log(data.toString('utf8')));
-socket.on('error', (err) => logger.error('socket error', err));
-socket.on('close', () => logger.log('connection closed'));
-socket.send = function(json) {
-  json['_'] = Date.now();
-  socket.write(JSON.stringify(json));
-};
+let socket = null;
+
+function connect () {
+  socket = net.createConnection(port, host);
+  socket.send = (json) => {
+    json['_'] = Date.now();
+    socket.write(JSON.stringify(json));
+  };
+
+  socket.on('error', (err) => logger.error('connection lost, retrying in 5 secs'));
+  socket.on('close', () => setTimeout(connect, 5000));
+}
 
 function runTest (test)
 {
@@ -70,6 +74,7 @@ const rl = readline.createInterface({
   prompt: prompt
 });
 
+connect();
 rl.prompt();
 rl.on('line', runTest);
 rl.on('close', () => { process.exit(0); });

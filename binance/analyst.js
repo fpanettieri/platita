@@ -106,6 +106,7 @@ async function analyzeCandle (symbol, interval, timestamp, candle, socket)
 
     const to = (new Date(timestamp)).getTime();
     const from = to - step * period;
+    console.log(`period: ${period}, from: ${from}, to: ${to}`);
 
     console.log(`Binance_${symbol}_${interval}`);
     const collection = ms.db.collection(`Binance_${symbol}_${interval}`);
