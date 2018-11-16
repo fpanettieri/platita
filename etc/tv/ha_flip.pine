@@ -1,0 +1,12 @@
+//@version=3
+study("HA Flip", overlay = true)
+
+ha_ticker = heikinashi(tickerid)
+ha_open = security(ha_ticker, period, open)
+ha_close = security(ha_ticker, period, close)
+
+long_cond = ha_close > ha_open and ha_open > ha_close[1]
+short_cond = ha_close < ha_open and ha_open < ha_close[1]
+
+plotshape(long_cond, style = shape.arrowup,   location = location.belowbar, color = green)
+plotshape(short_cond, style = shape.arrowdown, location = location.abovebar, color = red)

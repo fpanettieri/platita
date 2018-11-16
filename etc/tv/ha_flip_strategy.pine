@@ -1,0 +1,26 @@
+//@version=3
+strategy("HA Flip Strategy", overlay = true)
+
+ma_period = input(20, minval=1, title="Sell MA")
+
+ha_ticker = heikinashi(tickerid)
+ha_open = security(ha_ticker, period, open)
+ha_close = security(ha_ticker, period, close)
+
+ma_val = ma(close, ma_period)
+
+long_cond = ha_close > ha_open and ha_open > ha_close[1]
+short_cond = ha_close < ha_open and ha_open < ha_close[1]
+close_cond = ha_close > ma_val && ha_open < ma_val || ha_close < ma_val && ha_open > ma_val
+
+plotshape(long_cond, style = shape.arrowup,   location = location.belowbar, color = green)
+plotshape(short_cond, style = shape.arrowdown, location = location.abovebar, color = red)
+
+if (long_cond)
+    strategy.entry("long",  true)
+
+if (short_cond)
+    strategy.entry("short", false)
+
+if (close_cond)
+    

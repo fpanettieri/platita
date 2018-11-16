@@ -106,21 +106,21 @@ async function analyzeCandle (symbol, interval, timestamp, candle, socket)
 
     const to = (new Date(timestamp)).getTime();
     const from = to - step * period + 1;
-    console.log(`period: ${period}, from: ${from}, to: ${to}`);
 
-    console.log(`Binance_${symbol}_${interval}`);
     const collection = ms.db.collection(`Binance_${symbol}_${interval}`);
-    const history = await collection.find({t: {$lte: from, $gte: to}}).toArray();
-    console.dir(history);
+    const history = await collection.find({t: {$gte: from, $lte: to}}).toArray();
 
-    // use calculated step to
-    // calculate the exact begin and end params
-    // perfect fetch
-    //
-    // await try to fetch the latest PERIOD of candles
-    // if !candle
-    //   candle = last candle
-    //
+    // Append candle for realtime events
+    if (candle && candle.t !== history[history.length - 1].t) { history.push(candle); }
+
+    for (let i = 0; i < indicators.length; i++) {
+      const indicator = indicators[i];
+      const val = indicator.fn(history, indicator.cfg);
+      if (indicator.cfg.persist) {
+        
+      }
+    }
+
     // for indicator in indicators
     //   const val = indicator.fn(candle, period);
     //   if indicator.persist?
