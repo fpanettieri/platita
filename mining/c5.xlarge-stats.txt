@@ -1,0 +1,12 @@
+Intance Type: c5.xlarge
+Price per hour: $0.17
+Core usage avg: 
+
+ALGORITHM                           | GPS
+===============================================
+cuckaroo_cpu_compat_29     - 1 th   | 0.0327
+cuckatoo_mean_cpu_avx2_19  - 1 th   | 61.106
+cuckatoo_mean_cpu_avx2_19  - 4 th   | 111.36
+cuckatoo_mean_cpu_avx2_31  - 4 th   | 111.36
+cuckatoo_cuda_29           - 1 th   | 0.55
+cuckatoo_cuda_29           - 4 th   | 3.152

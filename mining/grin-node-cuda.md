@@ -15,26 +15,38 @@ cd grin
 cargo build
 cargo build --release
 
+# Create sandbox
+mkdir $HOME/sandbox
+cd $HOME/sandbox
+
 # Create server config (testnet == floonet)
 grin --floonet server config
 
 # Config changes
 enable_stratum_server = true
 
-# Download miner
-cd
-git clone https://github.com/mimblewimble/grin-miner.git
-cd grin-miner
-git submodule update --init
-cargo build
-cargo build --release
+# Screen
+https://gist.github.com/ChrisWills/1337178
+remove # New mail notification
+add # startup_message off
+screen
 
 # Listen
 grin --floonet wallet init
 grin --floonet wallet listen
 
+# Switch screen
+Ctrl-A c
+Ctrl-A n
+
 # Sync node
 grin --floonet server run
+
+# Download miner
+git clone https://github.com/mimblewimble/grin-miner.git
+cd grin-miner
+git submodule update --init
+cargo build --release
 
 # Grin doctor
 GRIN_API="localhost:13415"
