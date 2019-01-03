@@ -1,6 +1,5 @@
 Intance Type: g3s.xlarge
 Price per hour: $0.75
-Core usage avg: 20%
 
 ALGORITHM                           | GPS
 ===============================================
@@ -10,3 +9,6 @@ cuckatoo_mean_cpu_avx2_19  - 4 th   | 111.36
 cuckatoo_mean_cpu_avx2_31  - 4 th   | 111.36
 cuckatoo_cuda_29           - 1 th   | 0.55
 cuckatoo_cuda_29           - 4 th   | 3.152
+
+cuckatoo_mean_cpu_avx2_31   - 4 th   | ?
+cuckaroo_cpu_avx2_29        - 4 th   | ?

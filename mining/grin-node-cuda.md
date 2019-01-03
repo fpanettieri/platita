@@ -30,28 +30,6 @@ cd grin-miner
 git submodule update --init
 cargo build
 
-# Run
-grin --floonet wallet init
-grin --floonet wallet listen
-grin --floonet server run
-grin-miner --floonet
-
-# Grin doctor
-GRIN_API="localhost:13415"
-echo "API is $GRIN_API"
-
-echo "Asking API for chain status..."
-curl "http://$GRIN_API/v1/chain"
-
-echo "Asking grin for client status"
-grin --floonet client status
-
-echo "Asking API for connected peers"
-curl "http://$GRIN_API/v1/peers/connected"
-
-echo "Asking wallet for info"
-grin --floonet wallet info
-
 # Add Grin debug to the path
 export PATH=$HOME/grin/target/release:$PATH
 export PATH=$HOME/grin-miner/target/debug:$PATH
@@ -81,3 +59,9 @@ sudo nvidia-smi -ac 2505,1177
 # Compile with gcc-6
 which gcc-6
 CUDA_HOST_COMPILER=/usr/bin/gcc-6 cargo build --release
+
+# Run
+grin --floonet wallet init
+grin --floonet wallet listen
+grin --floonet server run
+grin-miner --floonet
