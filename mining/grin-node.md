@@ -1,8 +1,10 @@
+# Update package list & upgrade system
+sudo apt update
+sudo apt upgrade
+
 # Install rust
 curl https://sh.rustup.rs -sSf | sh; source $HOME/.cargo/env
 
-# Update package list
-sudo apt update
 
 # Install dependencies
 sudo apt install build-essential cmake git libgit2-dev clang libncurses5-dev libncursesw5-dev zlib1g-dev pkg-config libssl-dev llvm
@@ -78,6 +80,7 @@ screen
 cd sandbox
 grin --floonet wallet listen
 grin --floonet server run
+cp ../grin-miner/grin-miner.toml ./
 grin-miner --floonet
 
 # Upgrade grin to use CUDA
@@ -88,4 +91,4 @@ nvidia-smi
 
 # Compile with gcc-6
 which gcc-6
-CUDA_HOST_COMPILER=/usr/bin/gcc-6 cargo build
+CUDA_HOST_COMPILER=/usr/bin/gcc-6 cargo build --release
