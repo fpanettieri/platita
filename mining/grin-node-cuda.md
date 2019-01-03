@@ -40,7 +40,7 @@ https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&t
 sudo dpkg -i cuda-repo-ubuntu1804-10-0-local-10.0.130-410.48_1.0-1_amd64.deb
 sudo apt-key add /var/cuda-repo-<version>/7fa2af80.pub
 sudo apt update
-sudo apt install cuda
+sudo apt install cuda nvidia-cuda-toolkit
 
 # After migrating it to GPU powered machine
 cd sandbox
@@ -58,7 +58,7 @@ sudo nvidia-smi -ac 2505,1177
 
 # Compile with gcc-6
 which gcc-6
-CUDA_HOST_COMPILER=/usr/bin/gcc-6 cargo build --release
+CUDA_HOST_COMPILER=/usr/bin/gcc-6 cargo build
 
 # Run
 grin --floonet wallet init
