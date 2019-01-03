@@ -1,0 +1,7 @@
+Intance Type: m5.xlarge
+Price per hour: $0.17
+
+ALGORITHM                            | GPS
+==============================================
+cuckatoo_mean_cpu_avx2_31   - 4 th   | 0.0248
+cuckaroo_cpu_avx2_29        - 4 th   | 0.0864

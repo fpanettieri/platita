@@ -12,8 +12,11 @@ sudo apt install build-essential cmake git libgit2-dev clang libncurses5-dev lib
 # Build grin
 git clone https://github.com/mimblewimble/grin.git
 cd grin
-cargo build
 cargo build --release
+
+# Create sandbox
+mkdir $HOME/sandbox
+cd $HOME/sandbox
 
 # Create server config (testnet == floonet)
 grin --floonet server config
@@ -22,17 +25,16 @@ grin --floonet server config
 enable_stratum_server = true
 
 # Download miner
-cd
 git clone https://github.com/mimblewimble/grin-miner.git
 cd grin-miner
 git submodule update --init
 cargo build
-cargo build --release
 
-# Listen
+# Run
 grin --floonet wallet init
 grin --floonet wallet listen
 grin --floonet server run
+grin-miner --floonet
 
 # Grin doctor
 GRIN_API="localhost:13415"

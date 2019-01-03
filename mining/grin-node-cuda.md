@@ -12,7 +12,6 @@ sudo apt install build-essential cmake git libgit2-dev clang libncurses5-dev lib
 # Build grin
 git clone https://github.com/mimblewimble/grin.git
 cd grin
-cargo build
 cargo build --release
 
 # Create sandbox
@@ -25,28 +24,17 @@ grin --floonet server config
 # Config changes
 enable_stratum_server = true
 
-# Screen
-https://gist.github.com/ChrisWills/1337178
-remove # New mail notification
-add # startup_message off
-screen
-
-# Listen
-grin --floonet wallet init
-grin --floonet wallet listen
-
-# Switch screen
-Ctrl-A c
-Ctrl-A n
-
-# Sync node
-grin --floonet server run
-
 # Download miner
 git clone https://github.com/mimblewimble/grin-miner.git
 cd grin-miner
 git submodule update --init
-cargo build --release
+cargo build
+
+# Run
+grin --floonet wallet init
+grin --floonet wallet listen
+grin --floonet server run
+grin-miner --floonet
 
 # Grin doctor
 GRIN_API="localhost:13415"
@@ -68,7 +56,6 @@ grin --floonet wallet info
 export PATH=$HOME/grin/target/release:$PATH
 export PATH=$HOME/grin-miner/target/debug:$PATH
 
-
 # Download Cuda
 https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=deblocal
 
@@ -78,7 +65,6 @@ sudo apt update
 sudo apt install cuda
 
 # After migrating it to GPU powered machine
-screen
 cd sandbox
 grin --floonet wallet listen
 grin --floonet server run
@@ -90,6 +76,7 @@ https://www.grin-forum.org/t/how-to-mine-cuckoo-30-in-grin-help-us-test-and-coll
 
 # Check NVIDIA stats
 nvidia-smi
+sudo nvidia-smi -ac 2505,1177
 
 # Compile with gcc-6
 which gcc-6
