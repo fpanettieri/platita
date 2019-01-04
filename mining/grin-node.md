@@ -30,6 +30,10 @@ cd grin-miner
 git submodule update --init
 cargo build
 
+# Config Cuda miner
+cd sandbox
+cp ../grin-miner/grin-miner.toml ./
+
 # Run
 grin --floonet wallet init
 grin --floonet wallet listen
