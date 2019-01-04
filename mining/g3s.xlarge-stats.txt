@@ -1,8 +1,10 @@
 Intance Type: g3s.xlarge
 Price per hour: $0.75
 
-ALGORITHM                           | GPS
+ALGORITHM                            | GPS
 ===============================================
-cuckaroo_cpu_avx2_29        - 4 th   | ?
-cuckaroo_cuda_29            - 4 th   |
-cuckatoo_mean_cpu_avx2_31   - 4 th   | ?
+cuckaroo_cpu_avx2_29        - 4 th   | 0.08
+cuckaroo_cuda_29            - 4 th   | 0.9
+cuckatoo_mean_cpu_avx2_31   - 4 th   | 0.008
+cuckatoo_lean_cuda__31      - 4 th   | 0.05
+hybrid (avx2_29 + cuda_29)  - 4 th   | 0.968

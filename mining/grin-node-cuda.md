@@ -44,8 +44,6 @@ sudo apt install cuda nvidia-cuda-toolkit
 
 # After migrating it to GPU powered machine
 cd sandbox
-grin --floonet wallet listen
-grin --floonet server run
 cp ../grin-miner/grin-miner.toml ./
 grin-miner --floonet
 
