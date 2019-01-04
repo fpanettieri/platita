@@ -8,3 +8,8 @@ cuckaroo_cuda_29            - 4 th   | 0.9
 cuckatoo_mean_cpu_avx2_31   - 4 th   | 0.008
 cuckatoo_lean_cuda__31      - 4 th   | 0.05
 hybrid (avx2_29 + cuda_29)  - 4 th   | 0.968
+
+
+===============
+  GPU Tuning
+===============
