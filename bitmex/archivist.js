@@ -29,9 +29,9 @@ async function downloadMetadata (symbol, interval, socket)
     if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: cached.first, step: cached.step}); return; }
     ms.logger.info(`${id} metadata not found`);
 
-    const options = { limit: 2, startTime: 0 };
-    const ticks = await bitmex.trades(Binance, symbol, interval, options);
-    ms.logger.info(`${id} metadata received`);
+    // const options = { limit: 2, startTime: 0 };
+    // const ticks = await bitmex.trades(symbol, interval, options);
+    // ms.logger.info(`${id} metadata received`);
     //
     // const meta = { id: id, first: ticks[0][0], step: ticks[1][0] - ticks[0][0] };
     // const result = await collection.insertOne(meta);
@@ -48,7 +48,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
 {
   try {
     const id = `${symbol}_${interval}`;
-    const meta_col = ms.db.collection('Binance_Metadata');
+    const meta_col = ms.db.collection('Bitmex_Metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }
 
@@ -83,5 +83,4 @@ async function downloadHistory (symbol, interval, from, to, socket)
 }
 
 // -- Initialization
-microservice.start('archivist', 'binance', dispatchMsg).then(_ms => ms = _ms);
-Binance = binance.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);
+microservice.start('archivist', 'bitmex', dispatchMsg).then(_ms => ms = _ms);
