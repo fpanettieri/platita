@@ -13,3 +13,4 @@ hybrid (avx2_29 + cuda_29)  - 4 th   | 0.968
 ===============
   GPU Tuning
 ===============
+Basic hybrid - 400% CPU - 4 GB Ram ONLY
