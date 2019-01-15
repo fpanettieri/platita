@@ -3,6 +3,8 @@
 const microservice = require('../core/microservice');
 const bitmex = require('../lib/bitmex');
 
+const CANDLESTICKS_LIMIT = 500;
+
 // -- Holders
 let ms = null;
 
@@ -52,7 +54,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
 {
   try {
     const id = `${symbol}_${interval}`;
-    const meta_col = ms.db.collection('Bitmex_Metadata');
+    const meta_col = ms.db.collection('BitMEX_Metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }
 
@@ -60,7 +62,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const to_t = to ? (new Date(to)).getTime() : Date.now();
     if (from_t > to_t) { throw `invalid time interval: from ${from} to ${to}`; }
 
-    const collection = ms.db.collection(`Binance_${id}`);
+    const collection = ms.db.collection(`BitMEX_${id}`);
     const lifetime = to_t - from_t;
     const candles = Math.trunc(lifetime / metadata.step);
     const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
@@ -70,11 +72,15 @@ async function downloadHistory (symbol, interval, from, to, socket)
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
-      let options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
-      let ticks = await binance.candlesticks(Binance, symbol, interval, options);
+      const options = { method: 'GET', api: 'trade/bucketed', testnet: false };
+      const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i, partial: false };
+      ms.logger.log(params);
 
-      let ticks_objs = ticks.map((k) => binance.candleToObj(k));
-      await collection.insertMany(ticks_objs);
+      const ticks = await bitmex.api(options, params);
+
+      ms.logger.info(ticks.length)
+      // let ticks_objs = ticks.map((k) => binance.candleToObj(k));
+      // await collection.insertMany(ticks_objs);
       socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
     }
 
