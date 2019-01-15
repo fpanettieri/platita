@@ -1,6 +1,11 @@
 =====================
   Todo
 =====================
+. x-ratelimit-remaining: Check
+
+
+
+
 // - Analyst: After each candle arrives
 
 -- Strategy algorithm --

@@ -1,7 +1,7 @@
 'use strict';
 
 const microservice = require('../core/microservice');
-const binance = require('../lib/binance');
+const bitmex = require('../lib/bitmex');
 
 // -- Holders
 let ms = null;
@@ -29,13 +29,16 @@ async function downloadMetadata (symbol, interval, socket)
     if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: cached.first, step: cached.step}); return; }
     ms.logger.info(`${id} metadata not found`);
 
-    // const options = { limit: 2, startTime: 0 };
-    // const ticks = await bitmex.trades(symbol, interval, options);
-    // ms.logger.info(`${id} metadata received`);
-    //
-    // const meta = { id: id, first: ticks[0][0], step: ticks[1][0] - ticks[0][0] };
-    // const result = await collection.insertOne(meta);
-    // ms.logger.info(`${id} metadata stored`);
+    const options = { method: 'GET', api: 'trade/bucketed', testnet: false };
+    const params = { symbol: symbol, binSize: interval, count: 2, startTime: 0, partial: false };
+    const ticks = await bitmex.api(options, params);
+    ms.logger.info(`${id} metadata received`);
+
+    const from = (new Date(ticks[0].timestamp)).getTime();
+    const to = (new Date(ticks[1].timestamp)).getTime();
+    const meta = { id: id, first: from, step: to - from };
+    const result = await collection.insertOne(meta);
+    ms.logger.info(`${id} metadata stored`);
 
     socket.send({e: 'MetadataDownloaded', s:symbol, i:interval, first: meta.first, step: meta.step});
   } catch (err) {
