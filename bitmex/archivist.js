@@ -72,15 +72,13 @@ async function downloadHistory (symbol, interval, from, to, socket)
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
+      const start = new Date(from_t + metadata.step * CANDLESTICKS_LIMIT * i);
       const options = { method: 'GET', api: 'trade/bucketed', testnet: false };
-      const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i, partial: false };
-      ms.logger.log(params);
-
+      const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: start.toISOString(), partial: false };
       const ticks = await bitmex.api(options, params);
 
-      ms.logger.info(ticks.length)
-      // let ticks_objs = ticks.map((k) => binance.candleToObj(k));
-      // await collection.insertMany(ticks_objs);
+      const ticks_objs = ticks.map((k) => (new Date(k.timestamp)).getTime());
+      await collection.insertMany(ticks_objs);
       socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
     }
 
