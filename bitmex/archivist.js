@@ -77,7 +77,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
       const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: start.toISOString(), partial: false };
       const ticks = await bitmex.api(options, params);
 
-      const ticks_objs = ticks.map((k) => (new Date(k.timestamp)).getTime());
+      const ticks_objs = ticks.map((k) => bitmex.candleToObj(k));
       await collection.insertMany(ticks_objs);
       socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
     }
