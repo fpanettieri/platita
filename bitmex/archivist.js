@@ -72,6 +72,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
+      ms.logger.log(`fetch: ${i}/${fetches}`);
       const start = new Date(from_t + metadata.step * CANDLESTICKS_LIMIT * i);
       const options = { method: 'GET', api: 'trade/bucketed', testnet: false };
       const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: start.toISOString(), partial: false };
