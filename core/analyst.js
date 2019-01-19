@@ -1,6 +1,6 @@
 'use strict';
 
-const microservice = require('../core/microservice');
+const microservice = require('../lib/microservice');
 const binance = require('../lib/binance');
 const utils = require('../lib/utils');
 
@@ -117,7 +117,7 @@ async function analyzeCandle (symbol, interval, timestamp, candle, socket)
       const indicator = indicators[i];
       const val = indicator.fn(history, indicator.cfg);
       if (indicator.cfg.persist) {
-        
+
       }
     }
 
