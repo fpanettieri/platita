@@ -88,10 +88,10 @@ async function downloadHistory (symbol, interval, from, to, socket)
     }
 
     ms.logger.info(`${id} history updated`);
-    socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from_t, to: to_t});
+    socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from, to: to});
   } catch (err) {
     ms.logger.error('DownloadHistoryFailed');
-    socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from_t, to: to_t});
+    socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from, to: to});
   }
 }
 
