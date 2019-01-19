@@ -24,7 +24,7 @@ function dispatchMsg (msg, socket)
 
 async function downloadMetadata (symbol, interval, socket)
 {
-  const id = `${symbol}_${interval}`;
+  const id = `binance_${symbol}_${interval}`;
   const collection = ms.db.collection('Binance_Metadata');
 
   try {

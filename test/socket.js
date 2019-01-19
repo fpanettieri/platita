@@ -12,7 +12,7 @@ assert(process.argv.length > 2);
 let port = process.argv[2];
 let host = process.argv[3] || '0.0.0.0';
 let symbol = process.argv[4] || 'XBTUSD';
-let interval = process.argv[5] || '1m';
+let interval = process.argv[5] || '1d';
 
 let socket = null;
 
