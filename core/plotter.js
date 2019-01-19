@@ -43,11 +43,11 @@ async function plot (id, from, to, output)
   logger.info (`plotting ${id} ${from_t} ${to_t}`);
 
   const db = await mongo.connect();
-  const collection = db.collection(id);
+  const collection = db.collection(`${id}_ohlc`);
 
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
   candles.forEach(parseBignums);
-  logger.log('parsing big number');
+  logger.log(`${candles.length} candles`);
 
   // -- Setup canvas
   const chart_size = {
@@ -150,7 +150,7 @@ async function plot (id, from, to, output)
 }
 }
 
-const id = process.argv[2] || 'bitmex_xbtusd_1d_ohlc';
+const id = process.argv[2] || 'bitmex_xbtusd_1d';
 const from = process.argv[3] || 0;
 const to = process.argv[4] || Date.now();
 const output = process.argv[5] || '/tmp/plot.png'
