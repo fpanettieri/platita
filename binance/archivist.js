@@ -1,5 +1,7 @@
 'use strict';
 
+const mongodb = require('mongodb');
+
 const microservice = require('../lib/microservice');
 const binance = require('../lib/binance');
 
@@ -29,7 +31,7 @@ async function downloadMetadata (symbol, interval, socket)
 
   try {
     const cached = await collection.findOne({'id': id});
-    if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: cached.first, step: cached.step}); return; }
+    if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: mongodb.Long(cached.first), step: cached.step}); return; }
     ms.logger.info(`${id} metadata not found`);
 
     const options = { limit: 2, startTime: 0 };

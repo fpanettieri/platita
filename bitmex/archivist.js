@@ -1,5 +1,7 @@
 'use strict';
 
+const mongodb = require('mongodb');
+
 const microservice = require('../lib/microservice');
 const bitmex = require('../lib/bitmex');
 
@@ -39,7 +41,7 @@ async function downloadMetadata (symbol, interval, socket)
     const from = (new Date(ticks[0].timestamp)).getTime();
     const to = (new Date(ticks[1].timestamp)).getTime();
 
-    const meta = { id: id, first: from, step: to - from };
+    const meta = { id: id, first: mongodb.Long(from), step: to - from };
     const result = await collection.insertOne(meta);
     ms.logger.info(`${id} metadata stored`);
 
