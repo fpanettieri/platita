@@ -59,21 +59,27 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const to_t = to ? (new Date(to)).getTime() : Date.now();
     if (from_t > to_t) { throw `invalid time interval: from ${from} to ${to}`; }
 
-    const collection = ms.db.collection(`Binance_${id}`);
+    const raw_col = ms.db.collection(`binance_${id}_raw`);
+    const ohlc_col = ms.db.collection(`binance_${id}_ohlc`);
+
     const lifetime = to_t - from_t;
     const candles = Math.trunc(lifetime / metadata.step);
     const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
     ms.logger.log(`life: ${lifetime}\tcandles: ${candles}\t fetches: ${fetches}`);
 
-    await collection.deleteMany({t: { $gte: from_t, $lte: to_t }});
+    await raw_col.deleteMany({t: { $gte: from_t, $lte: to_t }});
+    await ohlc_col.deleteMany({t: { $gte: from_t, $lte: to_t }});
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
-      let options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
-      let ticks = await binance.candlesticks(Binance, symbol, interval, options);
-
-      let ticks_objs = ticks.map((k) => binance.candleToObj(k));
+      const options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
+      const ticks = await binance.candlesticks(Binance, symbol, interval, options);
+      const ticks_objs = ticks.map((k) => binance.toObj(k));
       await collection.insertMany(ticks_objs);
+
+      const ohlcs = ticks.map((k) => binance.toOhlc(k));
+      await ohlc_col.insertMany(ohlcs);
+
       socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
     }
 

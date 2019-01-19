@@ -23,8 +23,8 @@ function dispatchMsg (msg, socket)
 
 async function downloadMetadata (symbol, interval, socket)
 {
-  const id = `${symbol}_${interval}`;
-  const collection = ms.db.collection('BitMEX_Metadata');
+  const id = `${symbol}_${interval}`.toLowerCase();
+  const collection = ms.db.collection('metadata');
 
   try {
     const cached = await collection.findOne({'id': id});
@@ -53,8 +53,8 @@ async function downloadMetadata (symbol, interval, socket)
 async function downloadHistory (symbol, interval, from, to, socket)
 {
   try {
-    const id = `${symbol}_${interval}`;
-    const meta_col = ms.db.collection('BitMEX_Metadata');
+    const id = `${symbol}_${interval}`.toLowerCase();
+    const meta_col = ms.db.collection('metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }
 
@@ -62,24 +62,28 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const to_t = to ? (new Date(to)).getTime() : Date.now();
     if (from_t > to_t) { throw `invalid time interval: from ${from} to ${to}`; }
 
-    const collection = ms.db.collection(`BitMEX_${id}`);
+    const raw_col = ms.db.collection(`bitmex_${id}_raw`);
+    const ohlc_col = ms.db.collection(`bitmex_${id}_ohlc`);
+
     const lifetime = to_t - from_t;
     const candles = Math.trunc(lifetime / metadata.step);
     const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
     ms.logger.log(`life: ${lifetime}\tcandles: ${candles}\t fetches: ${fetches}`);
 
-    await collection.deleteMany({t: { $gte: from_t, $lte: to_t }});
+    await raw_col.deleteMany({timestamp: { $gte: new Date(from_t), $lte: new Date(to_t) }});
+    await ohlc_col.deleteMany({t: { $gte: from_t, $lte: to_t }});
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
-      ms.logger.log(`fetch: ${i}/${fetches}`);
       const start = new Date(from_t + metadata.step * CANDLESTICKS_LIMIT * i);
       const options = { method: 'GET', api: 'trade/bucketed', testnet: false };
       const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: start.toISOString(), partial: false };
       const ticks = await bitmex.api(options, params);
+      await raw_col.insertMany(ticks);
 
-      const ticks_objs = ticks.map((k) => bitmex.candleToObj(k));
-      await collection.insertMany(ticks_objs);
+      const ohlcs = ticks.map((k) => bitmex.toOhlc(k));
+      await ohlc_col.insertMany(ohlcs);
+
       socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
     }
 

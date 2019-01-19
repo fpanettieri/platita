@@ -14,7 +14,7 @@ const cfg = require('../cfg/plotter.json');
 
 function parseBignums (candle)
 {
-  ['o','h','l','v','q','V','Q','B'].forEach(prop => {
+  ['o','h','l','c','v'].forEach(prop => {
     candle[prop] = BigNumber(candle[prop]);
   });
 }
@@ -34,7 +34,7 @@ function project (candle, idx, range, cfg)
   return p;
 }
 
-async function plot (output, symbol, interval, from, to)
+async function plot (output, id, from, to)
 {
   try {
 
@@ -43,8 +43,8 @@ async function plot (output, symbol, interval, from, to)
   logger.info ('plotting', symbol, interval, from_t, to_t);
 
   const db = await mongo.connect();
-  const collection = db.collection(`Binance_${symbol}_${interval}`);
-  logger.log(`plotting Binance_${symbol}_${interval}`);
+  const collection = db.collection(id);
+  logger.log(`plotting ${id}`);
 
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
   candles.forEach(parseBignums);
@@ -151,8 +151,7 @@ async function plot (output, symbol, interval, from, to)
 }
 
 const output = process.argv[2] || '/tmp/plot.png'
-const symbol = process.argv[3] || 'BTCUSDT';
-const interval = process.argv[4] || '1d';
+const id = process.argv[3] || 'bitmex_xbtusd_1d';
 const from = process.argv[5] || 0 ;
 const to = process.argv[6] || Date.now();
 
