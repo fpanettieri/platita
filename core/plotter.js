@@ -34,20 +34,20 @@ function project (candle, idx, range, cfg)
   return p;
 }
 
-async function plot (output, id, from, to)
+async function plot (id, from, to, output)
 {
   try {
 
   const from_t = (new Date(from)).getTime();
   const to_t = (new Date(to)).getTime();
-  logger.info ('plotting', symbol, interval, from_t, to_t);
+  logger.info (`plotting ${id} ${from_t} ${to_t}`);
 
   const db = await mongo.connect();
   const collection = db.collection(id);
-  logger.log(`plotting ${id}`);
 
   const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
   candles.forEach(parseBignums);
+  logger.log('parsing big number');
 
   // -- Setup canvas
   const chart_size = {
@@ -150,9 +150,9 @@ async function plot (output, id, from, to)
 }
 }
 
-const output = process.argv[2] || '/tmp/plot.png'
-const id = process.argv[3] || 'bitmex_xbtusd_1d';
-const from = process.argv[5] || 0 ;
-const to = process.argv[6] || Date.now();
+const id = process.argv[2] || 'bitmex_xbtusd_1d_ohlc';
+const from = process.argv[3] || 0;
+const to = process.argv[4] || Date.now();
+const output = process.argv[5] || '/tmp/plot.png'
 
-plot (output, symbol, interval, from, to);
+plot (id, from, to, output);
