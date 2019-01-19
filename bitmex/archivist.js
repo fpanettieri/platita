@@ -53,7 +53,7 @@ async function downloadMetadata (symbol, interval, socket)
 async function downloadHistory (symbol, interval, from, to, socket)
 {
   try {
-    const id = `${symbol}_${interval}`.toLowerCase();
+    const id = `bitmex_${symbol}_${interval}`.toLowerCase();
     const meta_col = ms.db.collection('metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }

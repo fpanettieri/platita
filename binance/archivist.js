@@ -25,7 +25,7 @@ function dispatchMsg (msg, socket)
 async function downloadMetadata (symbol, interval, socket)
 {
   const id = `binance_${symbol}_${interval}`;
-  const collection = ms.db.collection('Binance_Metadata');
+  const collection = ms.db.collection('metadata');
 
   try {
     const cached = await collection.findOne({'id': id});
@@ -50,8 +50,8 @@ async function downloadMetadata (symbol, interval, socket)
 async function downloadHistory (symbol, interval, from, to, socket)
 {
   try {
-    const id = `${symbol}_${interval}`;
-    const meta_col = ms.db.collection('Binance_Metadata');
+    const id = `binance_${symbol}_${interval}`;
+    const meta_col = ms.db.collection('metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }
 
@@ -87,7 +87,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from_t, to: to_t});
   } catch (err) {
     ms.logger.error('DownloadHistoryFailed');
-    socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from_t, to: to_t});
+    socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from, to: to});
   }
 }
 
