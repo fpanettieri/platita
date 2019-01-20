@@ -1,0 +1,31 @@
+First candle
+  1443225600000
+  timestamp: '2015-09-26T00:00:00.000Z',
+  symbol: 'XBTUSD',
+  open: 239.99,
+  high: 239.99,
+  low: 234.81,
+  close: 235.2,
+  trades: 153,
+  volume: 190090,
+  vwap: 235.91,
+  lastSize: 24,
+  turnover: 44844188670,
+  homeNotional: 448.4418867000002,
+  foreignNotional: 105792.66073543105
+
+Second Candle
+  1443312000000
+  timestamp: '2015-09-27T00:00:00.000Z',
+  symbol: 'XBTUSD',
+  open: 235.2,
+  high: 235.36,
+  low: 232.91,
+  close: 234.51,
+  trades: 146,
+  volume: 258488,
+  vwap: 233.99,
+  lastSize: 200,
+  turnover: 60483729840,
+  homeNotional: 604.8372984000002,
+  foreignNotional: 141526.71090172205
