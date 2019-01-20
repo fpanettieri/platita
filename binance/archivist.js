@@ -61,8 +61,8 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const to_t = to ? (new Date(to)).getTime() : Date.now();
     if (from_t > to_t) { throw `invalid time interval: from ${from} to ${to}`; }
 
-    const raw_col = ms.db.collection(`binance_${id}_raw`);
-    const ohlc_col = ms.db.collection(`binance_${id}_ohlc`);
+    const raw_col = ms.db.collection(`${id}_raw`);
+    const ohlc_col = ms.db.collection(`${id}_ohlc`);
 
     const lifetime = to_t - from_t;
     const candles = Math.trunc(lifetime / metadata.step);
