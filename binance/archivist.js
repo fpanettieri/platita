@@ -26,19 +26,19 @@ function dispatchMsg (msg, socket)
 
 async function downloadMetadata (symbol, interval, socket)
 {
-  const id = `binance_${symbol}_${interval}`;
+  const id = `binance_${symbol}_${interval}`.toLowerCase();
   const collection = ms.db.collection('metadata');
 
   try {
     const cached = await collection.findOne({'id': id});
-    if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: mongodb.Long.fromNumber(cached.first), step: cached.step}); return; }
+    if (cached) { socket.send({e: 'MetadataDownloaded', s: symbol, i: interval, first: cached.first, step: cached.step}); return; }
     ms.logger.info(`${id} metadata not found`);
 
     const options = { limit: 2, startTime: 0 };
     const ticks = await binance.candlesticks(Binance, symbol, interval, options);
     ms.logger.info(`${id} metadata received`);
 
-    const meta = { id: id, first: ticks[0][0], step: ticks[1][0] - ticks[0][0] };
+    const meta = { id: id, first: mongodb.Long.fromNumber(ticks[0][0]), step: ticks[1][0] - ticks[0][0] };
     const result = await collection.insertOne(meta);
     ms.logger.info(`${id} metadata stored`);
 
