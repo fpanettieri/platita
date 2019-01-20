@@ -77,7 +77,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
       const options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
       const ticks = await binance.candlesticks(Binance, symbol, interval, options);
       const ticks_objs = ticks.map((k) => binance.toObj(k));
-      await collection.insertMany(ticks_objs);
+      await raw_col.insertMany(ticks_objs);
 
       const ohlcs = ticks.map((k) => binance.toOhlc(k));
       await ohlc_col.insertMany(ohlcs);
