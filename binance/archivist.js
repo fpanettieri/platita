@@ -79,7 +79,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
       const ticks_objs = ticks.map((k) => binance.toObj(k));
       await raw_col.insertMany(ticks_objs);
 
-      const ohlcs = ticks.map((k) => binance.toOhlc(k));
+      const ohlcs = ticks_objs.map((o) => binance.toOhlc(o));
       await ohlc_col.insertMany(ohlcs);
 
       socket.send({e: 'HistoryPartiallyDownloaded', s: symbol, i: interval, progress: (i + 1) / fetches});
