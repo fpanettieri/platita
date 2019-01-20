@@ -40,8 +40,8 @@ async function downloadMetadata (symbol, interval, socket)
 
     const from = (new Date(ticks[0].timestamp)).getTime();
     const to = (new Date(ticks[1].timestamp)).getTime();
-    
-    const meta = { id: id, first: mongodb.Long(from), step: to - from };
+
+    const meta = { id: id, first: mongodb.Long.fromNumber(from), step: to - from };
     const result = await collection.insertOne(meta);
     ms.logger.info(`${id} metadata stored`);
 
@@ -63,6 +63,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const from_t = from ? (new Date(from)).getTime() : metadata.first;
     const to_t = to ? (new Date(to)).getTime() : Date.now();
     if (from_t > to_t) { throw `invalid time interval: from ${from} to ${to}`; }
+    ms.logger.log(`from: ${from}/${from_t} -- to: ${to}/${to_t}`);
 
     const raw_col = ms.db.collection(`${id}_raw`);
     const ohlc_col = ms.db.collection(`${id}_ohlc`);
@@ -71,6 +72,8 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const candles = Math.trunc(lifetime / metadata.step);
     const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
     ms.logger.log(`life: ${lifetime}\tcandles: ${candles}\t fetches: ${fetches}`);
+
+    return;
 
     await raw_col.deleteMany({timestamp: { $gte: new Date(from_t), $lte: new Date(to_t) }});
     await ohlc_col.deleteMany({t: { $gte: from_t, $lte: to_t }});
