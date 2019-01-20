@@ -1,36 +1,11 @@
 'use strict';
 
 const microservice = require('../lib/microservice');
-const binance = require('../lib/binance');
 const utils = require('../lib/utils');
 
-// -- Holders
-let Binance = null;
 let ms = null;
-
-// -- Internal state
 let period = 3;
 const indicators = [];
-
-function intervalToMs (interval)
-{
-  const dimension = interval[interval.length - 1];
-  let ms = parseInt(interval.slice(0, -1)) * 1000;
-
-  if (dimension === 'M') {
-    ms *= 30;
-  } else if (dimension === 'w') {
-    ms *= 7;
-  }
-
-  switch (dimension) {
-    case 'd': ms *= 24;
-    case 'h': ms *= 60;
-    case 'm': ms *= 60;
-  }
-
-  return ms;
-}
 
 function dispatchMsg (msg, socket)
 {
@@ -94,7 +69,10 @@ function removeIndicator (indicator, cfg, socket)
 
 async function analyzeCandle (symbol, interval, timestamp, candle, socket)
 {
-  console.log('[analyzeCandle]', symbol, interval, timestamp, candle);
+  ms.logger.log('WIP');
+  return;
+
+  ms.logger.log('[analyzeCandle]', symbol, interval, timestamp, candle);
   try {
     const step = intervalToMs(interval);
 
@@ -136,4 +114,3 @@ async function analyzeCandle (symbol, interval, timestamp, candle, socket)
 
 // -- Initialization
 microservice.start('analyst', 'binance', dispatchMsg).then(_ms => ms = _ms);
-Binance = binance.init(process.env.BINANCE_KEY, process.env.BINANCE_SECRET, process.env.BINANCE_SANDBOX);

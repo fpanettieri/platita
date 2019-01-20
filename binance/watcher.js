@@ -3,7 +3,6 @@
 const microservice = require('../lib/microservice');
 const binance = require('../lib/binance');
 
-// -- Holders
 let Binance = null;
 let ms = null;
 

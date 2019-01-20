@@ -7,7 +7,6 @@ const binance = require('../lib/binance');
 
 const CANDLESTICKS_LIMIT = 500;
 
-// -- Holders
 let Binance = null;
 let ms = null;
 
