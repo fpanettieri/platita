@@ -44,7 +44,7 @@ async function downloadMetadata (symbol, interval, socket)
 
     socket.send({e: 'MetadataDownloaded', s:symbol, i:interval, first: meta.first, step: meta.step});
   } catch (err) {
-    ms.logger.error('DownloadMetadataFailed');
+    ms.logger.error('DownloadMetadataFailed', err);
     socket.send({e: 'DownloadMetadataFailed', s:symbol, i:interval});
   }
 }
@@ -52,8 +52,7 @@ async function downloadMetadata (symbol, interval, socket)
 async function downloadHistory (symbol, interval, from, to, socket)
 {
   try {
-    // const id = `binance_${symbol}_${interval}`.toLowerCase();
-    const id = `binance_${symbol}_${interval}`;
+    const id = `binance_${symbol}_${interval}`.toLowerCase();
     const meta_col = ms.db.collection('metadata');
     const metadata = await meta_col.findOne({'id': id});
     if (!metadata) { throw `${id} metadata not found`; }
@@ -89,7 +88,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     ms.logger.info(`${id} history updated`);
     socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from_t, to: to_t});
   } catch (err) {
-    ms.logger.error('DownloadHistoryFailed');
+    ms.logger.error('DownloadHistoryFailed', err);
     socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from, to: to});
   }
 }
