@@ -43,7 +43,7 @@ async function downloadMetadata (symbol, interval, socket)
 
     socket.send({e: 'MetadataDownloaded', s:symbol, i:interval, first: meta.first, step: meta.step});
   } catch (err) {
-    ms.logger.error('DownloadMetadataFailed', err);
+    ms.logger.error('DownloadMetadataFailed');
     socket.send({e: 'DownloadMetadataFailed', s:symbol, i:interval});
   }
 }
@@ -87,7 +87,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     ms.logger.info(`${id} history updated`);
     socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from_t, to: to_t});
   } catch (err) {
-    ms.logger.error('DownloadHistoryFailed', err);
+    ms.logger.error('DownloadHistoryFailed');
     socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from, to: to});
   }
 }
