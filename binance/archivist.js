@@ -68,8 +68,8 @@ async function downloadHistory (symbol, interval, from, to, socket)
     const fetches = Math.ceil(candles / CANDLESTICKS_LIMIT);
     ms.logger.log(`life: ${lifetime}\tcandles: ${candles}\t fetches: ${fetches}`);
 
-    await raw_col.deleteMany({t: { $gte: from_t, $lte: to_t }});
-    await ohlc_col.deleteMany({t: { $gte: from_t, $lte: to_t }});
+    await raw_col.deleteMany({t: { $gte: from_t, $lt: to_t }});
+    await ohlc_col.deleteMany({t: { $gte: from_t, $lt: to_t }});
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
