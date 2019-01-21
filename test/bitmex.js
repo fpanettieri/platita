@@ -14,6 +14,8 @@ async function download_metadata (socket)
   assert(res.e === 'MetadataDownloaded');
   assert(res.s === ev.s);
   assert(res.i === ev.i);
+
+  // TODO: assert metadata count?
 }
 
 async function download_history (socket)
@@ -24,6 +26,8 @@ async function download_history (socket)
   assert(res.e === 'HistoryDownloaded');
   assert(res.s === ev.s);
   assert(res.i === ev.i);
+
+  // TODO: assert candle count?
 }
 
 async function download_history_range (socket)
@@ -34,6 +38,8 @@ async function download_history_range (socket)
   assert(res.e === 'HistoryDownloaded');
   assert(res.s === ev.s);
   assert(res.i === ev.i);
+
+  // TODO: assert candle count?
 }
 
 let port = process.argv[2] || '1234';
