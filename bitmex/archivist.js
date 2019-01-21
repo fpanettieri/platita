@@ -82,7 +82,8 @@ async function downloadHistory (symbol, interval, from, to, socket)
       const count = Math.min(candles - i * CANDLESTICKS_LIMIT, CANDLESTICKS_LIMIT);
       const params = { symbol: symbol, binSize: interval, count: count, startTime: start.toISOString(), partial: false };
       const ticks = await bitmex.api(options, params);
-      await raw_col.insertMany(ticks);
+      const ticks_objs = ticks.map((k) => bitmex.toObj(k));
+      await raw_col.insertMany(ticks_objs);
 
       const ohlcs = ticks.map((k) => bitmex.toOhlc(k));
       await ohlc_col.insertMany(ohlcs);
