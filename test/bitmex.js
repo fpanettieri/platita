@@ -26,11 +26,22 @@ async function download_history (socket)
   assert(res.i === ev.i);
 }
 
+async function download_history_range (socket)
+{
+  const ev = {e: 'DownloadHistory', s: 'XBTUSD', i: '1d', from: '2018-01-01', to: '2018-02-01'};
+  const res = await socket.sync(ev, 'HistoryDownloaded');
+
+  assert(res.e === 'HistoryDownloaded');
+  assert(res.s === ev.s);
+  assert(res.i === ev.i);
+}
+
 let port = process.argv[2] || '1234';
 let host = process.argv[3] || '0.0.0.0';
 
 const suite = new TestSuite();
 suite.connect(port, host);
 suite.add(download_metadata);
-suite.add(download_history);
+// suite.add(download_history);
+suite.add(download_history_range);
 suite.run();

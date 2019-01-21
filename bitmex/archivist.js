@@ -18,6 +18,7 @@ function dispatchMsg (msg, socket)
     } break;
 
     case 'DownloadHistory': {
+      ms.logger.warn(msg);
       downloadHistory(msg.s, msg.i, msg.from || 0, msg.to || Date.now(), socket);
     } break;
   }
