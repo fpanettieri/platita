@@ -47,8 +47,7 @@ class TestSuite
         await this.tests[i](this.client);
         passed++;
       } catch (err) {
-        logger.log(`${this.tests[i].name} failed`);
-        logger.error(err);
+        logger.error(`${this.tests[i].name} failed`, err);
       }
     }
 
