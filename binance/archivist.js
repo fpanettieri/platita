@@ -73,7 +73,8 @@ async function downloadHistory (symbol, interval, from, to, socket)
     ms.logger.info(`${id} removed duplicates`);
 
     for (let i = 0; i < fetches; i++) {
-      const options = { limit: CANDLESTICKS_LIMIT, startTime: from_t + metadata.step * CANDLESTICKS_LIMIT * i };
+      const start = from_t + metadata.step * CANDLESTICKS_LIMIT * i;
+      const options = { limit: CANDLESTICKS_LIMIT, startTime: start, endTime: to_t - 1 };
       const ticks = await binance.candlesticks(Binance, symbol, interval, options);
       const ticks_objs = ticks.map((k) => binance.toObj(k));
       await raw_col.insertMany(ticks_objs);
@@ -85,7 +86,7 @@ async function downloadHistory (symbol, interval, from, to, socket)
     }
 
     ms.logger.info(`${id} history updated`);
-    socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from_t, to: to_t});
+    socket.send({e: 'HistoryDownloaded', s: symbol, i: interval, from: from, to: to});
   } catch (err) {
     ms.logger.error('DownloadHistoryFailed');
     socket.send({e: 'DownloadHistoryFailed', s: symbol, i: interval, from: from, to: to});
