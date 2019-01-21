@@ -56,7 +56,7 @@ async function download_invalid_range (socket)
 const suite = new TestSuite();
 suite.connect(port, host);
 suite.add(download_metadata);
-suite.add(download_history);
+// suite.add(download_history);
 suite.add(download_history_range);
-suite.add(download_invalid_range);
+// suite.add(download_invalid_range);
 suite.run();
