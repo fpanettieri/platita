@@ -53,8 +53,8 @@ let host = process.argv[3] || '0.0.0.0';
 
 const suite = new TestSuite();
 suite.connect(port, host);
-suite.add(metadata);
-// suite.add(download_history);
+suite.add(download_metadata);
+suite.add(download_history);
 suite.add(download_history_range);
 suite.add(download_invalid_range);
 suite.run();
