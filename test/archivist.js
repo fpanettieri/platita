@@ -6,9 +6,14 @@ const TestSuite = require('./suite');
 const Logger = new require('../lib/logger');
 const logger = new Logger('[test/bitmex]');
 
+let symbol = process.argv[2] || 'XBTUSD';
+let interval = process.argv[3] || '1d';
+let port = process.argv[4] || '1234';
+let host = process.argv[5] || '0.0.0.0';
+
 async function download_metadata (socket)
 {
-  const ev = {e: 'DownloadMetadata', s: 'XBTUSD', i: '1d'};
+  const ev = {e: 'DownloadMetadata', s: symbol, i: '1d'};
   const res = await socket.sync(ev, 'MetadataDownloaded');
 
   assert(res.e === 'MetadataDownloaded');
@@ -19,7 +24,7 @@ async function download_metadata (socket)
 
 async function download_history (socket)
 {
-  const ev = {e: 'DownloadHistory', s: 'XBTUSD', i: '1d'};
+  const ev = {e: 'DownloadHistory', s: symbol, i: '1d'};
   const res = await socket.sync(ev, 'HistoryDownloaded');
 
   assert(res.e === 'HistoryDownloaded');
@@ -30,7 +35,7 @@ async function download_history (socket)
 
 async function download_history_range (socket)
 {
-  const ev = {e: 'DownloadHistory', s: 'XBTUSD', i: '1d', from: '2018-01-01', to: '2018-02-01'};
+  const ev = {e: 'DownloadHistory', s: symbol, i: '1d', from: '2018-01-01', to: '2018-02-01'};
   const res = await socket.sync(ev, 'HistoryDownloaded');
 
   assert(res.e === 'HistoryDownloaded');
@@ -41,15 +46,12 @@ async function download_history_range (socket)
 
 async function download_invalid_range (socket)
 {
-  const ev = {e: 'DownloadHistory', s: 'XBTUSD', i: '1d', from: '2018-01-05', to: '2018-01-01'};
+  const ev = {e: 'DownloadHistory', s: symbol, i: '1d', from: '2018-01-05', to: '2018-01-01'};
   const res = await socket.sync(ev, 'DownloadHistoryFailed');
   assert(res.e === 'DownloadHistoryFailed');
   assert(res.s === ev.s);
   assert(res.i === ev.i);
 }
-
-let port = process.argv[2] || '1234';
-let host = process.argv[3] || '0.0.0.0';
 
 const suite = new TestSuite();
 suite.connect(port, host);
