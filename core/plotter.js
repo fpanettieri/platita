@@ -99,12 +99,6 @@ async function plot (id, from, to, output)
     logger.log('rendered grid');
   }
 
-  { // FIND GAP!!!!
-    for (let i = 1; i < candles.length; i++) {
-      console.log(candles[i].t, candles[i].t - candles[i - 1].t);
-    }
-  } return;
-
   { // Render candles
     let range = {min: Number.MAX_VALUE, max: Number.MIN_VALUE };
     for (let i = 0; i < candles.length; i++) {
