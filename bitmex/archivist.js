@@ -18,7 +18,6 @@ function dispatchMsg (msg, socket)
     } break;
 
     case 'DownloadHistory': {
-      ms.logger.warn(msg);
       downloadHistory(msg.s, msg.i, msg.from || 0, msg.to || Date.now(), socket);
     } break;
   }
@@ -80,7 +79,8 @@ async function downloadHistory (symbol, interval, from, to, socket)
     for (let i = 0; i < fetches; i++) {
       const start = new Date(from_t + metadata.step * CANDLESTICKS_LIMIT * i);
       const options = { method: 'GET', api: 'trade/bucketed', testnet: false };
-      const params = { symbol: symbol, binSize: interval, count: CANDLESTICKS_LIMIT, startTime: start.toISOString(), partial: false };
+      const count = Math.min(candles - i * CANDLESTICKS_LIMIT, CANDLESTICKS_LIMIT);
+      const params = { symbol: symbol, binSize: interval, count: count, startTime: start.toISOString(), partial: false };
       const ticks = await bitmex.api(options, params);
       await raw_col.insertMany(ticks);
 
