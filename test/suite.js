@@ -15,7 +15,8 @@ class TestSuite
 
   connect (port, host)
   {
-    this.client = net.createConnection(port, host);
+    const client = net.createConnection(port, host);
+    client.setEncoding('utf-8');
 
     client.sync = async (json, expected) => {
       return new Promise( function(resolve, reject) {
@@ -31,6 +32,8 @@ class TestSuite
         client.write(JSON.stringify(json));
       });
     };
+
+    this.client = client;
   }
 
   async run ()
@@ -50,6 +53,7 @@ class TestSuite
     }
 
     logger.info(`results: ${passed} / ${this.tests.length} passed`);
+    this.client.end();
   }
 }
 

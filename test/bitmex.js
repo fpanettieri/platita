@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('assert');
-const TestSuite = require('./test');
+const TestSuite = require('./suite');
 
 const Logger = new require('../lib/logger');
 const logger = new Logger('[test/bitmex]');
@@ -25,5 +25,4 @@ suite.add(download_metadata);
 suite.add(download_metadata);
 suite.add(download_metadata);
 suite.add(download_metadata);
-
 suite.run();
