@@ -45,7 +45,7 @@ async function plot (id, from, to, output)
   const db = await mongo.connect();
   const collection = db.collection(`${id}_ohlc`);
 
-  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).toArray();
+  const candles = await collection.find({t: { $gte: from_t, $lte: to_t }}).sort({t: 1}).toArray();
   candles.forEach(parseBignums);
   logger.log(`${candles.length} candles`);
 
