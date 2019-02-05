@@ -1,16 +1,9 @@
 'use strict';
 
-const ws = require('ws');
-const mongodb = require('mongodb');
-
 const microservice = require('../lib/microservice');
 const bitmex = require('../lib/bitmex');
 
-const DMS_INTERVAL = 15 * 1000;
-const DMS_TIMEOUT = 60 * 1000;
-
 let ms = null;
-const client = new ws('wss://testnet.bitmex.com/realtime');
 
 function dispatchMsg (msg, socket)
 {
