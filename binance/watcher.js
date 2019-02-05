@@ -38,8 +38,8 @@ function watchSymbol (symbol, interval, socket)
       ms.logger.log(`raw ${raw}`);
       ms.logger.log(`ohlc ${ohlc}`);
 
-      // raw_col.replaceOne({t: raw.t}, raw, {upsert: true});
-      // ohlc_col.replaceOne({t: ohlc.t}, ohlc, {upsert: true});
+      raw_col.replaceOne({t: raw.t}, raw, {upsert: true});
+      ohlc_col.replaceOne({t: ohlc.t}, ohlc, {upsert: true});
     });
 
   } catch (err) {

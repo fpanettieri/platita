@@ -14,7 +14,7 @@ let host = process.argv[5] || '0.0.0.0';
 async function watch_symbol (socket)
 {
   const ev = {e: 'WatchSymbol', s: symbol, i: interval};
-  const res = await socket.sync(ev, 'CandleClosed');
+  const res = await socket.sync(ev, 'CandleClosez');
 
   assert(res.e === 'CandleClosed');
   assert(res.s === ev.s);
