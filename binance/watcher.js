@@ -26,18 +26,12 @@ function watchSymbol (symbol, interval, socket)
 
     Binance.websockets.candlesticks(symbol, interval, (candlestick) => {
       const raw = candlestick.k;
-      const ohlc = (o) => binance.toOhlc(raw);
+      const ohlc = binance.toOhlc(raw);
       const ev = raw.x ? 'CandleClosed' : 'CandleUpdated';
-
-      ms.logger.log(`${id} ${ev}`);
       socket.send({e: ev, s: symbol, i: interval, raw: raw, ohlc: ohlc});
 
       // Store closed candles
       if (!raw.x) { return }
-
-      ms.logger.log(`raw ${raw}`);
-      ms.logger.log(`ohlc ${ohlc}`);
-
       raw_col.replaceOne({t: raw.t}, raw, {upsert: true});
       ohlc_col.replaceOne({t: ohlc.t}, ohlc, {upsert: true});
     });
