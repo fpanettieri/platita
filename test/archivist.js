@@ -4,7 +4,7 @@ const assert = require('assert');
 const TestSuite = require('./suite');
 
 const Logger = new require('../lib/logger');
-const logger = new Logger('[test/bitmex]');
+const logger = new Logger('[test/archivist]');
 
 let symbol = process.argv[2] || 'XBTUSD';
 let interval = process.argv[3] || '1d';

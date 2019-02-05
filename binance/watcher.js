@@ -9,27 +9,33 @@ let ms = null;
 function dispatchMsg (msg, socket)
 {
   switch (msg.e) {
-    case 'WatchSymbols': {
-      watchSymbols(msg.s, msg.i, socket);
+    case 'WatchSymbol': {
+      watchSymbol(msg.s, msg.i, socket);
     } break;
   }
 }
 
-function watchSymbols (symbols, interval, socket)
+function watchSymbol (symbol, interval, socket)
 {
   try {
-    const symbols_arr = symbols.split(',').map(s => s.trim());
-    ms.logger.log('now watching', symbols_arr);
+    const id = `binance_${symbol}_${interval}`.toLowerCase();
 
-    Binance.websockets.candlesticks(symbols_arr, interval, (candlestick) => {
+    const raw_col = ms.db.collection(`${id}_raw`);
+    const ohlc_col = ms.db.collection(`${id}_ohlc`);
+
+    ms.logger.info(`watching ${id}`);
+
+    Binance.websockets.candlesticks(symbol, interval, (candlestick) => {
       const c = candlestick.k;
       const e = c.x ? 'CandleClosed' : 'CandleUpdated';
       socket.send({e: e, candle: candlestick.k});
 
       // Store closed candles
       if (!c.x) { return }
-      const collection = ms.db.collection(`Binance_${c.s}_${c.i}`);
-      collection.replaceOne({t: c.t}, c, {upsert: true});
+      raw_col.replaceOne({t: c.t}, c, {upsert: true});
+
+      const ohlc = (o) => binance.toOhlc(c);
+      ohlc_col.replaceOne({t: ohlc.t}, ohlc, {upsert: true});
     });
 
   } catch (err) {
