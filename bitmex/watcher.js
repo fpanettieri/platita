@@ -1,23 +1,25 @@
 'use strict';
 
 const microservice = require('../lib/microservice');
-const bitmex = require('../lib/bitmex');
+const bitmex = require('../lib/bitmex_ws');
 
 let ms = null;
 
 function dispatchMsg (msg, socket)
 {
   switch (msg.e) {
-    case 'WatchSymbols': {
-      watchSymbols(msg.s, msg.i, socket);
+    case 'WatchSymbol': {
+      watchSymbol(msg.s, msg.i, socket);
     } break;
   }
 }
 
-function watchSymbols (symbol, interval, socket)
+function watchSymbol (symbol, interval, socket)
 {
   try {
     ms.logger.log(symbol, interval);
+
+    // TODO: todo
 
   } catch (err) {
     ms.logger.log(err);
